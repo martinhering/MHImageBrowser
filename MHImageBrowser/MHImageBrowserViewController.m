@@ -74,6 +74,18 @@ static NSString * const kImageCellIdentifier = @"ImageCellIdentifier";
     [[NSNotificationCenter defaultCenter] removeObserver:self.scrollObserver];
 }
 
+- (NSScrollView*) contentScrollView {
+    return self.collectionView;
+}
+
+- (NSColor*) backgroundColor {
+    return self.collectionView.backgroundColor;
+}
+
+- (void) setBackgroundColor:(NSColor *)backgroundColor {
+    self.collectionView.backgroundColor = backgroundColor;
+}
+
 - (void) setDataSource:(id<MHImageBrowserViewControllerDataSource>)dataSource
 {
     if (_dataSource != dataSource) {

@@ -14,6 +14,10 @@
 
 @interface MHImageBrowserViewController : NSViewController
 @property (nonatomic) NSSize cellSize;
+@property (nonatomic, readonly) NSScrollView* contentScrollView;
+
+@property (nonatomic, strong) NSColor *backgroundColor;
+
 @property (nonatomic, weak) IBOutlet id<MHImageBrowserViewControllerDataSource> dataSource;
 @end
 
