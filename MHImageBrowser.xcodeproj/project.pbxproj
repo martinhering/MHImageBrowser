@@ -12,6 +12,10 @@
 		1BD441FD1A5554D1001C0B58 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 1BD441FC1A5554D1001C0B58 /* Images.xcassets */; };
 		1BD442001A5554D1001C0B58 /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1BD441FE1A5554D1001C0B58 /* MainMenu.xib */; };
 		1BD4420C1A5554D1001C0B58 /* MHImageBrowserTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 1BD4420B1A5554D1001C0B58 /* MHImageBrowserTests.m */; };
+		1BD442221A5557C2001C0B58 /* JNWCollectionView.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1BD4421D1A555790001C0B58 /* JNWCollectionView.framework */; };
+		1BD442241A5557D7001C0B58 /* JNWCollectionView.framework in Copy Frameworks */ = {isa = PBXBuildFile; fileRef = 1BD4421D1A555790001C0B58 /* JNWCollectionView.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		1BD4422A1A555985001C0B58 /* MHImageBrowserViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1BD442291A555985001C0B58 /* MHImageBrowserViewController.m */; };
+		1BD4422D1A555CC9001C0B58 /* MHImageBrowserImageCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 1BD4422C1A555CC9001C0B58 /* MHImageBrowserImageCell.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -22,7 +26,42 @@
 			remoteGlobalIDString = 1BD441F11A5554D1001C0B58;
 			remoteInfo = MHImageBrowser;
 		};
+		1BD4421C1A555790001C0B58 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 1BD442151A555790001C0B58 /* JNWCollectionView.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = ABB023F1170791D300537A92;
+			remoteInfo = JNWCollectionView;
+		};
+		1BD4421E1A555790001C0B58 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 1BD442151A555790001C0B58 /* JNWCollectionView.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = ABB02409170791D300537A92;
+			remoteInfo = JNWCollectionViewTests;
+		};
+		1BD442201A5557A2001C0B58 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 1BD442151A555790001C0B58 /* JNWCollectionView.xcodeproj */;
+			proxyType = 1;
+			remoteGlobalIDString = ABB023F0170791D300537A92;
+			remoteInfo = JNWCollectionView;
+		};
 /* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		1BD442231A5557C5001C0B58 /* Copy Frameworks */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				1BD442241A5557D7001C0B58 /* JNWCollectionView.framework in Copy Frameworks */,
+			);
+			name = "Copy Frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
 		1BD441F21A5554D1001C0B58 /* MHImageBrowser.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MHImageBrowser.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -35,6 +74,11 @@
 		1BD442051A5554D1001C0B58 /* MHImageBrowserTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = MHImageBrowserTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		1BD4420A1A5554D1001C0B58 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		1BD4420B1A5554D1001C0B58 /* MHImageBrowserTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MHImageBrowserTests.m; sourceTree = "<group>"; };
+		1BD442151A555790001C0B58 /* JNWCollectionView.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = JNWCollectionView.xcodeproj; path = JNWCollectionView/JNWCollectionView.xcodeproj; sourceTree = "<group>"; };
+		1BD442281A555985001C0B58 /* MHImageBrowserViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MHImageBrowserViewController.h; sourceTree = "<group>"; };
+		1BD442291A555985001C0B58 /* MHImageBrowserViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MHImageBrowserViewController.m; sourceTree = "<group>"; };
+		1BD4422B1A555CC9001C0B58 /* MHImageBrowserImageCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MHImageBrowserImageCell.h; sourceTree = "<group>"; };
+		1BD4422C1A555CC9001C0B58 /* MHImageBrowserImageCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MHImageBrowserImageCell.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -42,6 +86,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				1BD442221A5557C2001C0B58 /* JNWCollectionView.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -58,6 +103,7 @@
 		1BD441E91A5554D1001C0B58 = {
 			isa = PBXGroup;
 			children = (
+				1BD442151A555790001C0B58 /* JNWCollectionView.xcodeproj */,
 				1BD441F41A5554D1001C0B58 /* MHImageBrowser */,
 				1BD442081A5554D1001C0B58 /* MHImageBrowserTests */,
 				1BD441F31A5554D1001C0B58 /* Products */,
@@ -78,6 +124,10 @@
 			children = (
 				1BD441F71A5554D1001C0B58 /* AppDelegate.h */,
 				1BD441F81A5554D1001C0B58 /* AppDelegate.m */,
+				1BD442281A555985001C0B58 /* MHImageBrowserViewController.h */,
+				1BD442291A555985001C0B58 /* MHImageBrowserViewController.m */,
+				1BD4422B1A555CC9001C0B58 /* MHImageBrowserImageCell.h */,
+				1BD4422C1A555CC9001C0B58 /* MHImageBrowserImageCell.m */,
 				1BD441FC1A5554D1001C0B58 /* Images.xcassets */,
 				1BD441FE1A5554D1001C0B58 /* MainMenu.xib */,
 				1BD441F51A5554D1001C0B58 /* Supporting Files */,
@@ -111,6 +161,15 @@
 			name = "Supporting Files";
 			sourceTree = "<group>";
 		};
+		1BD442161A555790001C0B58 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				1BD4421D1A555790001C0B58 /* JNWCollectionView.framework */,
+				1BD4421F1A555790001C0B58 /* JNWCollectionViewTests.octest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -121,10 +180,12 @@
 				1BD441EE1A5554D1001C0B58 /* Sources */,
 				1BD441EF1A5554D1001C0B58 /* Frameworks */,
 				1BD441F01A5554D1001C0B58 /* Resources */,
+				1BD442231A5557C5001C0B58 /* Copy Frameworks */,
 			);
 			buildRules = (
 			);
 			dependencies = (
+				1BD442211A5557A2001C0B58 /* PBXTargetDependency */,
 			);
 			name = MHImageBrowser;
 			productName = MHImageBrowser;
@@ -178,6 +239,12 @@
 			mainGroup = 1BD441E91A5554D1001C0B58;
 			productRefGroup = 1BD441F31A5554D1001C0B58 /* Products */;
 			projectDirPath = "";
+			projectReferences = (
+				{
+					ProductGroup = 1BD442161A555790001C0B58 /* Products */;
+					ProjectRef = 1BD442151A555790001C0B58 /* JNWCollectionView.xcodeproj */;
+				},
+			);
 			projectRoot = "";
 			targets = (
 				1BD441F11A5554D1001C0B58 /* MHImageBrowser */,
@@ -185,6 +252,23 @@
 			);
 		};
 /* End PBXProject section */
+
+/* Begin PBXReferenceProxy section */
+		1BD4421D1A555790001C0B58 /* JNWCollectionView.framework */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.framework;
+			path = JNWCollectionView.framework;
+			remoteRef = 1BD4421C1A555790001C0B58 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		1BD4421F1A555790001C0B58 /* JNWCollectionViewTests.octest */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.cfbundle;
+			path = JNWCollectionViewTests.octest;
+			remoteRef = 1BD4421E1A555790001C0B58 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+/* End PBXReferenceProxy section */
 
 /* Begin PBXResourcesBuildPhase section */
 		1BD441F01A5554D1001C0B58 /* Resources */ = {
@@ -211,7 +295,9 @@
 			buildActionMask = 2147483647;
 			files = (
 				1BD441FB1A5554D1001C0B58 /* main.m in Sources */,
+				1BD4422A1A555985001C0B58 /* MHImageBrowserViewController.m in Sources */,
 				1BD441F91A5554D1001C0B58 /* AppDelegate.m in Sources */,
+				1BD4422D1A555CC9001C0B58 /* MHImageBrowserImageCell.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -230,6 +316,11 @@
 			isa = PBXTargetDependency;
 			target = 1BD441F11A5554D1001C0B58 /* MHImageBrowser */;
 			targetProxy = 1BD442061A5554D1001C0B58 /* PBXContainerItemProxy */;
+		};
+		1BD442211A5557A2001C0B58 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = JNWCollectionView;
+			targetProxy = 1BD442201A5557A2001C0B58 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 

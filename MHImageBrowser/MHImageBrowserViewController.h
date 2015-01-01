@@ -1,5 +1,5 @@
 //
-//  AppDelegate.h
+//  ImageBrowserViewController.h
 //  MHImageBrowser
 //
 //  Created by Martin Hering on 01.01.15.
@@ -8,9 +8,8 @@
 
 #import <Cocoa/Cocoa.h>
 
-@interface AppDelegate : NSObject <NSApplicationDelegate>
+@interface MHImageBrowserViewController : NSViewController
 
-@property (nonatomic) CGFloat cellSizeValue;
+@property (nonatomic) NSSize cellSize;
 
 @end
-
