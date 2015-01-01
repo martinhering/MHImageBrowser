@@ -30,8 +30,11 @@
 
 - (void)applicationDidFinishLaunching:(NSNotification *)aNotification
 {
-    // Insert code here to initialize your application
+    self.window.appearance = [NSAppearance appearanceNamed:NSAppearanceNameVibrantDark];
+    self.window.backgroundColor = [NSColor blackColor];
     
+    // Insert code here to initialize your application
+    self.imageBrowserViewController.backgroundColor = [NSColor colorWithCalibratedWhite:0.15 alpha:1.];
     
     
     self.cellSizeValue = self.imageBrowserViewController.cellSize.width;

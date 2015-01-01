@@ -668,10 +668,10 @@
             </items>
         </menu>
         <window title="MHImageBrowser" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" releasedWhenClosed="NO" animationBehavior="default" id="QvC-M9-y7g">
-            <windowStyleMask key="styleMask" titled="YES" closable="YES" miniaturizable="YES" resizable="YES" unifiedTitleAndToolbar="YES"/>
-            <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES" bottomStrut="YES"/>
+            <windowStyleMask key="styleMask" titled="YES" closable="YES" miniaturizable="YES" resizable="YES" texturedBackground="YES" unifiedTitleAndToolbar="YES"/>
             <rect key="contentRect" x="335" y="390" width="731" height="612"/>
             <rect key="screenRect" x="0.0" y="0.0" width="2560" height="1417"/>
+            <value key="minSize" type="size" width="640" height="480"/>
             <view key="contentView" id="EiT-Mj-1SZ" userLabel="Content View">
                 <rect key="frame" x="0.0" y="-2" width="731" height="612"/>
                 <autoresizingMask key="autoresizingMask"/>
@@ -680,7 +680,7 @@
                         <rect key="frame" x="0.0" y="39" width="731" height="573"/>
                     </customView>
                     <slider verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="BE3-bY-DFV">
-                        <rect key="frame" x="18" y="13" width="167" height="20"/>
+                        <rect key="frame" x="18" y="11" width="167" height="20"/>
                         <constraints>
                             <constraint firstAttribute="width" constant="163" id="VXI-dj-Z2x"/>
                         </constraints>
@@ -692,7 +692,7 @@
                 </subviews>
                 <constraints>
                     <constraint firstItem="BE3-bY-DFV" firstAttribute="leading" secondItem="EiT-Mj-1SZ" secondAttribute="leading" constant="20" id="A9s-ld-VPw"/>
-                    <constraint firstAttribute="bottom" secondItem="BE3-bY-DFV" secondAttribute="bottom" constant="15" id="Qoo-Rs-jYq"/>
+                    <constraint firstAttribute="bottom" secondItem="BE3-bY-DFV" secondAttribute="bottom" constant="13" id="Qoo-Rs-jYq"/>
                     <constraint firstAttribute="trailing" secondItem="mPf-Sj-fuj" secondAttribute="trailing" id="RNx-ab-WwL"/>
                     <constraint firstItem="mPf-Sj-fuj" firstAttribute="top" secondItem="EiT-Mj-1SZ" secondAttribute="top" id="cPC-tf-qBy"/>
                     <constraint firstAttribute="bottom" secondItem="mPf-Sj-fuj" secondAttribute="bottom" constant="39" id="e6g-bd-Nf1"/>

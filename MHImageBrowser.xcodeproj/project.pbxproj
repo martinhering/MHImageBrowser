@@ -495,6 +495,7 @@
 				1BD442111A5554D1001C0B58 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		1BD442121A5554D1001C0B58 /* Build configuration list for PBXNativeTarget "MHImageBrowserTests" */ = {
 			isa = XCConfigurationList;
@@ -503,6 +504,7 @@
 				1BD442141A5554D1001C0B58 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
