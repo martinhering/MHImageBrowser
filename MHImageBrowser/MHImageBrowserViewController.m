@@ -13,10 +13,14 @@
 
 static NSString * const kImageCellIdentifier = @"ImageCellIdentifier";
 
-@interface MHImageBrowserViewController () <JNWCollectionViewDataSource, JNWCollectionViewDelegate, JNWCollectionViewGridLayoutDelegate>
+@interface MHImageBrowserViewController () <JNWCollectionViewDataSource, JNWCollectionViewDelegate, JNWCollectionViewGridLayoutDelegate> {
+    struct {
+        unsigned int dataSourceNumberOfGroups:1;
+        unsigned int dataSourceNumberOfItemsInGroup:1;
+        unsigned int dataSourceItemAtIndexPath:1;
+    } _flags;
+}
 @property (nonatomic, strong) IBOutlet JNWCollectionView* collectionView;
-
-@property (nonatomic, strong) NSArray *images;
 @property (nonatomic, strong) NSIndexPath* activeScrollCellIndexPath;
 @property (nonatomic, strong) NSIndexPath* selectedIndexPath;
 @property (nonatomic) BOOL userScroll;
@@ -28,8 +32,6 @@ static NSString * const kImageCellIdentifier = @"ImageCellIdentifier";
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do view setup here.
-    
-    [self generateImages];
     
     JNWCollectionView* collectionView = [[JNWCollectionView alloc] initWithFrame:self.view.bounds];
     collectionView.autoresizingMask = NSViewWidthSizable | NSViewHeightSizable;
@@ -70,6 +72,16 @@ static NSString * const kImageCellIdentifier = @"ImageCellIdentifier";
 - (void) dealloc
 {
     [[NSNotificationCenter defaultCenter] removeObserver:self.scrollObserver];
+}
+
+- (void) setDataSource:(id<MHImageBrowserViewControllerDataSource>)dataSource
+{
+    if (_dataSource != dataSource) {
+        _dataSource = dataSource;
+        _flags.dataSourceNumberOfGroups = [dataSource respondsToSelector:@selector(numberOfGroupsInImageBrowser:)];
+        _flags.dataSourceNumberOfItemsInGroup = [dataSource respondsToSelector:@selector(imageBrowser:numberOfItemsInGroup:)];
+        _flags.dataSourceItemAtIndexPath = [dataSource respondsToSelector:@selector(imageBrowser:itemAtIndexPath:)];
+    }
 }
 
 - (void) setCellSize:(NSSize)cellSize
@@ -114,18 +126,33 @@ static NSString * const kImageCellIdentifier = @"ImageCellIdentifier";
 
 #pragma mark Data source
 
-- (JNWCollectionViewCell *)collectionView:(JNWCollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath {
-    MHImageBrowserImageCell *cell = (MHImageBrowserImageCell *)[collectionView dequeueReusableCellWithIdentifier:kImageCellIdentifier];
-    cell.objectValue = self.images[indexPath.jnw_item % self.images.count];
-    return cell;
+- (JNWCollectionViewCell *)collectionView:(JNWCollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath
+{
+    if (_flags.dataSourceItemAtIndexPath) {
+        id<MHImageBrowserImageItem> item = [self.dataSource imageBrowser:self itemAtIndexPath:indexPath];
+        
+        MHImageBrowserImageCell *cell = (MHImageBrowserImageCell *)[collectionView dequeueReusableCellWithIdentifier:kImageCellIdentifier];
+        cell.objectValue = item.representation;
+        return cell;
+    }
+
+    return nil;
 }
 
-- (NSInteger)numberOfSectionsInCollectionView:(JNWCollectionView *)collectionView {
-    return 5;
+- (NSInteger)numberOfSectionsInCollectionView:(JNWCollectionView *)collectionView
+{
+    if (_flags.dataSourceNumberOfGroups) {
+        return [self.dataSource numberOfGroupsInImageBrowser:self];
+    }
+    return 0;
 }
 
-- (NSUInteger)collectionView:(JNWCollectionView *)collectionView numberOfItemsInSection:(NSInteger)section {
-    return 500;
+- (NSUInteger)collectionView:(JNWCollectionView *)collectionView numberOfItemsInSection:(NSInteger)section
+{
+    if (_flags.dataSourceNumberOfItemsInGroup) {
+        return [self.dataSource imageBrowser:self numberOfItemsInGroup:section];
+    }
+    return 0;
 }
 
 - (CGSize)sizeForItemInCollectionView:(JNWCollectionView *)collectionView {
@@ -144,36 +171,8 @@ static NSString * const kImageCellIdentifier = @"ImageCellIdentifier";
         self.selectedIndexPath = nil;
     }
 }
-#pragma mark Image creation
 
-// To simulate at least something realistic, this just generates some randomly tinted images so that not every
-// cell has the same image.
-- (void)generateImages {
-    NSInteger numberOfImages = 30;
-    NSMutableArray *images = [NSMutableArray array];
-    
-    for (int i = 0; i < numberOfImages; i++) {
-        
-        // Just get a randomly-tinted template image.
-        NSImage *image = [NSImage imageWithSize:CGSizeMake(150.f, 150.f) flipped:NO drawingHandler:^BOOL(NSRect dstRect) {
-            [[NSImage imageNamed:NSImageNameUser] drawInRect:dstRect fromRect:CGRectZero operation:NSCompositeSourceOver fraction:1];
-            
-            CGFloat hue = arc4random() % 256 / 256.0;
-            CGFloat saturation = arc4random() % 128 / 256.0 + 0.5;
-            CGFloat brightness = arc4random() % 128 / 256.0 + 0.5;
-            NSColor *color = [NSColor colorWithCalibratedHue:hue saturation:saturation brightness:brightness alpha:1];
-            
-            [color set];
-            NSRectFillUsingOperation(dstRect, NSCompositeDestinationAtop);
-            
-            return YES;
-        }];
-        
-        [images addObject:image];
-    }
-    
-    self.images = images.copy;
-}
+
 
 
 @end

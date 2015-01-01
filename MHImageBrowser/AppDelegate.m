@@ -8,17 +8,31 @@
 
 #import "AppDelegate.h"
 #import "MHImageBrowserViewController.h"
+#import "DemoImageItem.h"
 
-@interface AppDelegate ()
+@interface AppDelegate () <MHImageBrowserViewControllerDataSource>
 
 @property (weak) IBOutlet NSWindow *window;
 @property (weak) IBOutlet MHImageBrowserViewController* imageBrowserViewController;
+
+@property (nonatomic, strong) NSArray* imageItems;
 @end
 
 @implementation AppDelegate
 
-- (void)applicationDidFinishLaunching:(NSNotification *)aNotification {
+- (id) init
+{
+    if ((self = [super init])) {
+        [self generateImages];
+    }
+    return self;
+}
+
+- (void)applicationDidFinishLaunching:(NSNotification *)aNotification
+{
     // Insert code here to initialize your application
+    
+    
     
     self.cellSizeValue = self.imageBrowserViewController.cellSize.width;
 }
@@ -34,5 +48,58 @@
         
         self.imageBrowserViewController.cellSize = NSMakeSize(cellSizeValue, cellSizeValue);
     }
+}
+
+- (void)generateImages
+{
+    NSInteger numberOfImages = 30;
+    NSMutableArray *imageItems = [NSMutableArray array];
+    
+    for (int i = 0; i < numberOfImages; i++) {
+        
+        // Just get a randomly-tinted template image.
+        NSImage *image = [NSImage imageWithSize:CGSizeMake(150.f, 150.f) flipped:NO drawingHandler:^BOOL(NSRect dstRect) {
+            [[NSImage imageNamed:NSImageNameUser] drawInRect:dstRect fromRect:CGRectZero operation:NSCompositeSourceOver fraction:1];
+            
+            CGFloat hue = arc4random() % 256 / 256.0;
+            CGFloat saturation = arc4random() % 128 / 256.0 + 0.5;
+            CGFloat brightness = arc4random() % 128 / 256.0 + 0.5;
+            NSColor *color = [NSColor colorWithCalibratedHue:hue saturation:saturation brightness:brightness alpha:1];
+            
+            [color set];
+            NSRectFillUsingOperation(dstRect, NSCompositeDestinationAtop);
+            
+            return YES;
+        }];
+        
+        DemoImageItem* item = [[DemoImageItem alloc] init];
+        item.UID = [@(i) stringValue];
+        item.representationType = MHImageBrowserImageItemRepresentationTypeNSImage;
+        item.representation = image;
+        item.title = @"test";
+        item.selectable = YES;
+        
+        [imageItems addObject:item];
+    }
+    
+    self.imageItems = imageItems;
+}
+
+
+#pragma mark - MHImageBrowserViewControllerDataSource
+
+- (NSUInteger) numberOfGroupsInImageBrowser:(MHImageBrowserViewController *)imageBrowser
+{
+    return 1;
+}
+
+- (NSUInteger) imageBrowser:(MHImageBrowserViewController *)imageBrowser numberOfItemsInGroup:(NSUInteger)group
+{
+    return [self.imageItems count];
+}
+
+- (id <MHImageBrowserImageItem>) imageBrowser:(MHImageBrowserViewController *)imageBrowser itemAtIndexPath:(NSIndexPath*)indexPath
+{
+    return self.imageItems[[indexPath indexAtPosition:1]];
 }
 @end

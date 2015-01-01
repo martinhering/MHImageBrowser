@@ -16,6 +16,7 @@
 		1BD442241A5557D7001C0B58 /* JNWCollectionView.framework in Copy Frameworks */ = {isa = PBXBuildFile; fileRef = 1BD4421D1A555790001C0B58 /* JNWCollectionView.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		1BD4422A1A555985001C0B58 /* MHImageBrowserViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1BD442291A555985001C0B58 /* MHImageBrowserViewController.m */; };
 		1BD4422D1A555CC9001C0B58 /* MHImageBrowserImageCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 1BD4422C1A555CC9001C0B58 /* MHImageBrowserImageCell.m */; };
+		1BD442311A5577AC001C0B58 /* DemoImageItem.m in Sources */ = {isa = PBXBuildFile; fileRef = 1BD442301A5577AC001C0B58 /* DemoImageItem.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -79,6 +80,8 @@
 		1BD442291A555985001C0B58 /* MHImageBrowserViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MHImageBrowserViewController.m; sourceTree = "<group>"; };
 		1BD4422B1A555CC9001C0B58 /* MHImageBrowserImageCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MHImageBrowserImageCell.h; sourceTree = "<group>"; };
 		1BD4422C1A555CC9001C0B58 /* MHImageBrowserImageCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MHImageBrowserImageCell.m; sourceTree = "<group>"; };
+		1BD4422F1A5577AC001C0B58 /* DemoImageItem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DemoImageItem.h; sourceTree = "<group>"; };
+		1BD442301A5577AC001C0B58 /* DemoImageItem.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DemoImageItem.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -128,6 +131,8 @@
 				1BD442291A555985001C0B58 /* MHImageBrowserViewController.m */,
 				1BD4422B1A555CC9001C0B58 /* MHImageBrowserImageCell.h */,
 				1BD4422C1A555CC9001C0B58 /* MHImageBrowserImageCell.m */,
+				1BD4422F1A5577AC001C0B58 /* DemoImageItem.h */,
+				1BD442301A5577AC001C0B58 /* DemoImageItem.m */,
 				1BD441FC1A5554D1001C0B58 /* Images.xcassets */,
 				1BD441FE1A5554D1001C0B58 /* MainMenu.xib */,
 				1BD441F51A5554D1001C0B58 /* Supporting Files */,
@@ -297,6 +302,7 @@
 				1BD441FB1A5554D1001C0B58 /* main.m in Sources */,
 				1BD4422A1A555985001C0B58 /* MHImageBrowserViewController.m in Sources */,
 				1BD441F91A5554D1001C0B58 /* AppDelegate.m in Sources */,
+				1BD442311A5577AC001C0B58 /* DemoImageItem.m in Sources */,
 				1BD4422D1A555CC9001C0B58 /* MHImageBrowserImageCell.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

@@ -703,6 +703,7 @@
         </window>
         <viewController id="CNJ-1H-NWn" customClass="MHImageBrowserViewController">
             <connections>
+                <outlet property="dataSource" destination="Voe-Tx-rLC" id="DX7-He-apA"/>
                 <outlet property="view" destination="mPf-Sj-fuj" id="gb3-DQ-ODW"/>
             </connections>
         </viewController>
