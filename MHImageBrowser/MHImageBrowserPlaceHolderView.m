@@ -20,10 +20,10 @@
     
     NSRect r = NSInsetRect(self.bounds, w*0.1, w*0.1);
     
-    NSBezierPath* roundedRectPath = [NSBezierPath bezierPathWithRoundedRect:r xRadius:10 yRadius:10];
+    NSBezierPath* roundedRectPath = [NSBezierPath bezierPathWithRoundedRect:r xRadius:w*0.1 yRadius:w*0.1];
     [roundedRectPath fill];
     
-    [[NSColor colorWithWhite:0.35 alpha:1] set];
+    [[NSColor colorWithWhite:1 alpha:0.2] set];
     
     CGFloat dashes[] = {w*0.1, w*0.02};
     [roundedRectPath setLineDash:dashes count:2 phase:0.0];

@@ -36,6 +36,7 @@
         _placeholderView.autoresizingMask = NSViewWidthSizable | NSViewHeightSizable;
         _placeholderView.wantsLayer = YES;
         _placeholderView.hidden = YES;
+        _placeholderView.layerContentsRedrawPolicy = NSViewLayerContentsRedrawOnSetNeedsDisplay;
         [self.contentView addSubview:_placeholderView];
         
         _imageView = [[NSView alloc] initWithFrame:frameRect];
@@ -46,42 +47,44 @@
     return self;
 }
 
+- (void) asyncRedraw
+{
+    [self.placeholderView setNeedsDisplay:YES];
+}
+
 - (void)prepareForReuse
 {
     [super prepareForReuse];
+    self.placeholderView.hidden = NO;
     self.objectValue = nil;
 }
 
 - (void)layout {
     [super layout];
     
-    NSImage* image = (NSImage*)self.objectValue;
-    if (!image)
-    {
-        self.placeholderView.hidden = NO;
-        
-        return;
-    }
-    
-    self.placeholderView.hidden = YES;
-    
-    NSSize imageSize = [image size];
-    CGFloat aspectRatio = imageSize.width / imageSize.height;
     
     NSRect imageViewRect = NSInsetRect(self.bounds, 5, 5);
     
-    if (imageSize.width >= imageSize.height) {
-        NSRect scaledRect = imageViewRect;
-        scaledRect.size.height = imageViewRect.size.width / aspectRatio;
-        scaledRect.origin.y = (imageViewRect.size.height - scaledRect.size.height) / 2 + 5;
-        imageViewRect = scaledRect;
-    }
-    else
+    NSImage* image = (NSImage*)self.objectValue;
+    if (image)
     {
-        NSRect scaledRect = imageViewRect;
-        scaledRect.size.width = imageViewRect.size.height * aspectRatio;
-        scaledRect.origin.x = (imageViewRect.size.width - scaledRect.size.width) / 2 + 5;
-        imageViewRect = scaledRect;
+        NSSize imageSize = [image size];
+        CGFloat aspectRatio = imageSize.width / imageSize.height;
+
+        if (imageSize.width >= imageSize.height) {
+            NSRect scaledRect = imageViewRect;
+            scaledRect.size.height = imageViewRect.size.width / aspectRatio;
+            scaledRect.origin.y = (imageViewRect.size.height - scaledRect.size.height) / 2 + 5;
+            imageViewRect = scaledRect;
+        }
+        else
+        {
+            NSRect scaledRect = imageViewRect;
+            scaledRect.size.width = imageViewRect.size.height * aspectRatio;
+            scaledRect.origin.x = (imageViewRect.size.width - scaledRect.size.width) / 2 + 5;
+            imageViewRect = scaledRect;
+        }
+        
     }
     
     
@@ -100,6 +103,9 @@
         NSImage* image = (NSImage*)objectValue;
         self.imageView.layer.contents = image;
         self.imageView.layer.backgroundColor = self.layer.backgroundColor;
+        self.placeholderView.hidden = (image != nil);
+        
+        [self layout];
     }
 }
 

@@ -12,6 +12,9 @@
 
 + (Class) placeholderViewClass;
 
-@property (nonatomic, strong) id objectValue;
+@property (nonatomic, strong) id<NSObject> objectValue;
+@property (nonatomic, strong) id<NSObject> reference;
+
+- (void) asyncRedraw;
 
 @end

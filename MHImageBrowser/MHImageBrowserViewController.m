@@ -10,6 +10,7 @@
 #import <JNWCollectionView/JNWCollectionView.h>
 
 #import "MHImageBrowserImageCell.h"
+#import "_MHImageBrowserCacheManager.h"
 
 static NSString * const kImageCellIdentifier = @"ImageCellIdentifier";
 
@@ -25,6 +26,7 @@ static NSString * const kImageCellIdentifier = @"ImageCellIdentifier";
 @property (nonatomic, strong) NSIndexPath* selectedIndexPath;
 @property (nonatomic) BOOL userScroll;
 @property (nonatomic, weak) id <NSObject> scrollObserver;
+@property (nonatomic, strong) _MHImageBrowserCacheManager* _cacheManager;
 @end
 
 @implementation MHImageBrowserViewController
@@ -32,6 +34,8 @@ static NSString * const kImageCellIdentifier = @"ImageCellIdentifier";
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do view setup here.
+    
+    self._cacheManager = [[_MHImageBrowserCacheManager alloc] init];
     
     JNWCollectionView* collectionView = [[JNWCollectionView alloc] initWithFrame:self.view.bounds];
     collectionView.autoresizingMask = NSViewWidthSizable | NSViewHeightSizable;
@@ -48,7 +52,7 @@ static NSString * const kImageCellIdentifier = @"ImageCellIdentifier";
     
     [collectionView registerClass:[MHImageBrowserImageCell class] forCellWithReuseIdentifier:kImageCellIdentifier];
     
-    self.cellSize = NSMakeSize(100, 100);
+    self.cellSize = NSMakeSize(160, 160);
     
     self.collectionView = collectionView;
     
@@ -103,14 +107,21 @@ static NSString * const kImageCellIdentifier = @"ImageCellIdentifier";
         
         [self.collectionView.collectionViewLayout invalidateLayout];
         
-        NSIndexPath* scrollIndexPath = (self.selectedIndexPath) ? self.selectedIndexPath : self.activeScrollCellIndexPath;
-        if (scrollIndexPath) {
-            self.userScroll = YES;
-            [self.collectionView scrollToItemAtIndexPath:scrollIndexPath
-                                        atScrollPosition:JNWCollectionViewScrollPositionMiddle
-                                                animated:NO];
-            self.userScroll = NO;
-        }
+        // asynchronously redraw cells
+        [NSObject cancelPreviousPerformRequestsWithTarget:self selector:@selector(_asyncRedrawAllCells) object:nil];
+        [self performSelector:@selector(_asyncRedrawAllCells) withObject:nil afterDelay:0.02];
+    }
+}
+
+- (void)collectionViewWillRelayoutCells:(JNWCollectionView *)collectionView
+{
+    NSIndexPath* scrollIndexPath = (self.selectedIndexPath) ? self.selectedIndexPath : self.activeScrollCellIndexPath;
+    if (scrollIndexPath) {
+        self.userScroll = YES;
+        [self.collectionView scrollToItemAtIndexPath:scrollIndexPath
+                                    atScrollPosition:JNWCollectionViewScrollPositionMiddle
+                                            animated:NO];
+        self.userScroll = NO;
     }
 }
 
@@ -136,19 +147,67 @@ static NSString * const kImageCellIdentifier = @"ImageCellIdentifier";
     return indexPathes[middleIndex];
 }
 
+- (void) _asyncRedrawAllCells
+{
+    for(NSIndexPath* indexPath in [self.collectionView indexPathsForVisibleItems])
+    {
+        MHImageBrowserImageCell *cell = (MHImageBrowserImageCell *)[self.collectionView cellForItemAtIndexPath:indexPath];
+//        if (_flags.dataSourceItemAtIndexPath) {
+//            id<MHImageBrowserImageItem> item = [self.dataSource imageBrowser:self itemAtIndexPath:indexPath];
+//            [self _setObjectValueForCell:cell item:item];
+//        }
+        [cell asyncRedraw];
+    }
+}
+
 #pragma mark Data source
 
+- (void) _setObjectValueForCell:(MHImageBrowserImageCell*)cell item:(id<MHImageBrowserImageItem>)item
+{
+    if (item.representationType == MHImageBrowserImageItemRepresentationTypeNSImage) {
+        cell.objectValue = item.representation;
+    }
+    else if (item.representationType == MHImageBrowserImageItemRepresentationTypeURL)
+    {
+        NSURL* url = (NSURL*)item.representation;
+        if ([url isKindOfClass:[NSURL class]])
+        {
+            cell.reference = url;
+            [self._cacheManager generateThumbnailForURL:url size:self.cellSize.width completion:^(NSImage* thumbnail, BOOL async) {
+                if (thumbnail && [cell.reference isEqual:url]) {
+                    cell.objectValue = thumbnail;
+                }
+            }];
+        }
+    }
+}
+
 - (JNWCollectionViewCell *)collectionView:(JNWCollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath
+{
+    MHImageBrowserImageCell *cell = (MHImageBrowserImageCell *)[collectionView dequeueReusableCellWithIdentifier:kImageCellIdentifier];
+    
+    if (_flags.dataSourceItemAtIndexPath) {
+        id<MHImageBrowserImageItem> item = [self.dataSource imageBrowser:self itemAtIndexPath:indexPath];
+        [self _setObjectValueForCell:cell item:item];
+    }
+    
+    return cell;
+}
+
+- (void)collectionView:(JNWCollectionView *)collectionView didEndDisplayingCell:(JNWCollectionViewCell *)cell forItemAtIndexPath:(NSIndexPath *)indexPath
 {
     if (_flags.dataSourceItemAtIndexPath) {
         id<MHImageBrowserImageItem> item = [self.dataSource imageBrowser:self itemAtIndexPath:indexPath];
         
-        MHImageBrowserImageCell *cell = (MHImageBrowserImageCell *)[collectionView dequeueReusableCellWithIdentifier:kImageCellIdentifier];
-        cell.objectValue = item.representation;
-        return cell;
+        if (item.representationType == MHImageBrowserImageItemRepresentationTypeURL)
+        {
+            NSURL* url = (NSURL*)item.representation;
+            if ([url isKindOfClass:[NSURL class]])
+            {
+                [self._cacheManager cancelGeneratingThumbnailForURL:url];
+            }
+        }
     }
-
-    return nil;
 }
 
 - (NSInteger)numberOfSectionsInCollectionView:(JNWCollectionView *)collectionView
@@ -168,8 +227,7 @@ static NSString * const kImageCellIdentifier = @"ImageCellIdentifier";
 }
 
 - (CGSize)sizeForItemInCollectionView:(JNWCollectionView *)collectionView {
-    NSSize cellSize = self.cellSize;
-    return CGSizeMake(cellSize.width, cellSize.height);
+    return self.cellSize;
 }
 
 - (void)collectionView:(JNWCollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath
