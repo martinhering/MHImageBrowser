@@ -7,14 +7,20 @@
 //
 
 #import "MHImageBrowserImageCell.h"
+#import "MHImageBrowserPlaceHolderView.h"
 #import <QuartzCore/QuartzCore.h>
 
 @interface MHImageBrowserImageCell ()
 @property (nonatomic, strong) NSView* imageView;
 @property (nonatomic, strong) NSView* selectionBackgroundView;
+@property (nonatomic, strong) MHImageBrowserPlaceHolderView* placeholderView;
 @end
 
 @implementation MHImageBrowserImageCell
+
++ (Class) placeholderViewClass {
+    return [MHImageBrowserPlaceHolderView class];
+}
 
 - (instancetype)initWithFrame:(NSRect)frameRect
 {
@@ -25,6 +31,12 @@
         _selectionBackgroundView.wantsLayer = YES;
         _selectionBackgroundView.layer.cornerRadius = 5.f;
         [self.contentView addSubview:_selectionBackgroundView];
+        
+        _placeholderView = [[[[self class] placeholderViewClass] alloc] initWithFrame:frameRect];
+        _placeholderView.autoresizingMask = NSViewWidthSizable | NSViewHeightSizable;
+        _placeholderView.wantsLayer = YES;
+        _placeholderView.hidden = YES;
+        [self.contentView addSubview:_placeholderView];
         
         _imageView = [[NSView alloc] initWithFrame:frameRect];
         _imageView.autoresizingMask = NSViewWidthSizable | NSViewHeightSizable;
@@ -43,9 +55,39 @@
 - (void)layout {
     [super layout];
     
-    CGRect imageViewRect = NSInsetRect(self.bounds, 5, 5);
+    NSImage* image = (NSImage*)self.objectValue;
+    if (!image)
+    {
+        self.placeholderView.hidden = NO;
+        
+        return;
+    }
+    
+    self.placeholderView.hidden = YES;
+    
+    NSSize imageSize = [image size];
+    CGFloat aspectRatio = imageSize.width / imageSize.height;
+    
+    NSRect imageViewRect = NSInsetRect(self.bounds, 5, 5);
+    
+    if (imageSize.width >= imageSize.height) {
+        NSRect scaledRect = imageViewRect;
+        scaledRect.size.height = imageViewRect.size.width / aspectRatio;
+        scaledRect.origin.y = (imageViewRect.size.height - scaledRect.size.height) / 2 + 5;
+        imageViewRect = scaledRect;
+    }
+    else
+    {
+        NSRect scaledRect = imageViewRect;
+        scaledRect.size.width = imageViewRect.size.height * aspectRatio;
+        scaledRect.origin.x = (imageViewRect.size.width - scaledRect.size.width) / 2 + 5;
+        imageViewRect = scaledRect;
+    }
+    
+    
     if (!NSEqualRects(imageViewRect, self.imageView.frame)) {
         self.imageView.frame = imageViewRect;
+        self.selectionBackgroundView.frame = NSInsetRect(imageViewRect, -5, -5);
     }
 }
 

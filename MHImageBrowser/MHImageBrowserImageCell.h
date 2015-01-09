@@ -10,6 +10,8 @@
 
 @interface MHImageBrowserImageCell : JNWCollectionViewCell
 
++ (Class) placeholderViewClass;
+
 @property (nonatomic, strong) id objectValue;
 
 @end

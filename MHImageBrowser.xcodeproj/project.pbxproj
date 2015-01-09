@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		1BAC9CB31A5FED1600E22238 /* MHImageBrowserPlaceHolderView.m in Sources */ = {isa = PBXBuildFile; fileRef = 1BAC9CB21A5FED1600E22238 /* MHImageBrowserPlaceHolderView.m */; };
 		1BD441F91A5554D1001C0B58 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 1BD441F81A5554D1001C0B58 /* AppDelegate.m */; };
 		1BD441FB1A5554D1001C0B58 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 1BD441FA1A5554D1001C0B58 /* main.m */; };
 		1BD441FD1A5554D1001C0B58 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 1BD441FC1A5554D1001C0B58 /* Images.xcassets */; };
@@ -65,6 +66,8 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		1BAC9CB11A5FED1600E22238 /* MHImageBrowserPlaceHolderView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MHImageBrowserPlaceHolderView.h; sourceTree = "<group>"; };
+		1BAC9CB21A5FED1600E22238 /* MHImageBrowserPlaceHolderView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MHImageBrowserPlaceHolderView.m; sourceTree = "<group>"; };
 		1BD441F21A5554D1001C0B58 /* MHImageBrowser.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MHImageBrowser.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		1BD441F61A5554D1001C0B58 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		1BD441F71A5554D1001C0B58 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
@@ -131,6 +134,8 @@
 				1BD442291A555985001C0B58 /* MHImageBrowserViewController.m */,
 				1BD4422B1A555CC9001C0B58 /* MHImageBrowserImageCell.h */,
 				1BD4422C1A555CC9001C0B58 /* MHImageBrowserImageCell.m */,
+				1BAC9CB11A5FED1600E22238 /* MHImageBrowserPlaceHolderView.h */,
+				1BAC9CB21A5FED1600E22238 /* MHImageBrowserPlaceHolderView.m */,
 				1BD4422F1A5577AC001C0B58 /* DemoImageItem.h */,
 				1BD442301A5577AC001C0B58 /* DemoImageItem.m */,
 				1BD441FC1A5554D1001C0B58 /* Images.xcassets */,
@@ -299,6 +304,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				1BAC9CB31A5FED1600E22238 /* MHImageBrowserPlaceHolderView.m in Sources */,
 				1BD441FB1A5554D1001C0B58 /* main.m in Sources */,
 				1BD4422A1A555985001C0B58 /* MHImageBrowserViewController.m in Sources */,
 				1BD441F91A5554D1001C0B58 /* AppDelegate.m in Sources */,

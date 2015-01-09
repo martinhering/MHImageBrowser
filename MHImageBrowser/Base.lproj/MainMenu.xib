@@ -684,7 +684,7 @@
                         <constraints>
                             <constraint firstAttribute="width" constant="163" id="VXI-dj-Z2x"/>
                         </constraints>
-                        <sliderCell key="cell" continuous="YES" state="on" alignment="left" minValue="40" maxValue="800" doubleValue="200" tickMarkPosition="above" sliderType="linear" id="EX6-Bw-8eq"/>
+                        <sliderCell key="cell" continuous="YES" state="on" alignment="left" minValue="80" maxValue="800" doubleValue="320" tickMarkPosition="above" sliderType="linear" id="EX6-Bw-8eq"/>
                         <connections>
                             <binding destination="Voe-Tx-rLC" name="value" keyPath="cellSizeValue" id="bSp-kX-wbt"/>
                         </connections>
