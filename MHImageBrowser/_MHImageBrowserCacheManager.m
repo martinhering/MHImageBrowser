@@ -16,6 +16,14 @@
 
 @implementation _MHImageBrowserCacheManager
 
++ (_MHImageBrowserCacheManager *)sharedManager
+{
+    static dispatch_once_t once;
+    static _MHImageBrowserCacheManager *singleton;
+    dispatch_once(&once, ^ { singleton = [[_MHImageBrowserCacheManager alloc] init]; });
+    return singleton;
+}
+
 - (instancetype) init
 {
     if ((self = [super init]))
@@ -70,7 +78,6 @@
                 NSImage* thumbnail = strongOperation.thumbnail;
                 if (thumbnail) {
                     self.thumbnailCache[cacheKey] = thumbnail;
-                    [self.thumbnailCache setObject:thumbnail forKey:cacheKey];
                 }
                 completionBlock(thumbnail, YES);
             });

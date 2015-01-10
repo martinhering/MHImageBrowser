@@ -78,6 +78,10 @@ static NSString * const kImageCellIdentifier = @"ImageCellIdentifier";
     [[NSNotificationCenter defaultCenter] removeObserver:self.scrollObserver];
 }
 
+- (void) reloadData {
+    [self.collectionView reloadData];
+}
+
 - (NSScrollView*) contentScrollView {
     return self.collectionView;
 }
@@ -152,61 +156,27 @@ static NSString * const kImageCellIdentifier = @"ImageCellIdentifier";
     for(NSIndexPath* indexPath in [self.collectionView indexPathsForVisibleItems])
     {
         MHImageBrowserImageCell *cell = (MHImageBrowserImageCell *)[self.collectionView cellForItemAtIndexPath:indexPath];
-//        if (_flags.dataSourceItemAtIndexPath) {
-//            id<MHImageBrowserImageItem> item = [self.dataSource imageBrowser:self itemAtIndexPath:indexPath];
-//            [self _setObjectValueForCell:cell item:item];
-//        }
         [cell asyncRedraw];
     }
 }
 
 #pragma mark Data source
 
-- (void) _setObjectValueForCell:(MHImageBrowserImageCell*)cell item:(id<MHImageBrowserImageItem>)item
-{
-    if (item.representationType == MHImageBrowserImageItemRepresentationTypeNSImage) {
-        cell.objectValue = item.representation;
-    }
-    else if (item.representationType == MHImageBrowserImageItemRepresentationTypeURL)
-    {
-        NSURL* url = (NSURL*)item.representation;
-        if ([url isKindOfClass:[NSURL class]])
-        {
-            cell.reference = url;
-            [self._cacheManager generateThumbnailForURL:url size:self.cellSize.width completion:^(NSImage* thumbnail, BOOL async) {
-                if (thumbnail && [cell.reference isEqual:url]) {
-                    cell.objectValue = thumbnail;
-                }
-            }];
-        }
-    }
-}
 
 - (JNWCollectionViewCell *)collectionView:(JNWCollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath
 {
     MHImageBrowserImageCell *cell = (MHImageBrowserImageCell *)[collectionView dequeueReusableCellWithIdentifier:kImageCellIdentifier];
-    
-    if (_flags.dataSourceItemAtIndexPath) {
-        id<MHImageBrowserImageItem> item = [self.dataSource imageBrowser:self itemAtIndexPath:indexPath];
-        [self _setObjectValueForCell:cell item:item];
-    }
-    
+    cell.style = self.cellStyle;
     return cell;
 }
 
-- (void)collectionView:(JNWCollectionView *)collectionView didEndDisplayingCell:(JNWCollectionViewCell *)cell forItemAtIndexPath:(NSIndexPath *)indexPath
+- (void) collectionView:(JNWCollectionView *)collectionView willDisplayCell:(JNWCollectionViewCell *)cell forItemAtIndexPath:(NSIndexPath *)indexPath
 {
     if (_flags.dataSourceItemAtIndexPath) {
         id<MHImageBrowserImageItem> item = [self.dataSource imageBrowser:self itemAtIndexPath:indexPath];
         
-        if (item.representationType == MHImageBrowserImageItemRepresentationTypeURL)
-        {
-            NSURL* url = (NSURL*)item.representation;
-            if ([url isKindOfClass:[NSURL class]])
-            {
-                [self._cacheManager cancelGeneratingThumbnailForURL:url];
-            }
-        }
+        MHImageBrowserImageCell* cellSubclass = (MHImageBrowserImageCell*)cell;
+        cellSubclass.itemValue = item;
     }
 }
 
@@ -227,7 +197,18 @@ static NSString * const kImageCellIdentifier = @"ImageCellIdentifier";
 }
 
 - (CGSize)sizeForItemInCollectionView:(JNWCollectionView *)collectionView {
-    return self.cellSize;
+    NSSize cellSize = self.cellSize;
+    if (self.cellStyle & MHImageBrowserCellStyleTitled) {
+        cellSize.height += 20;
+    }
+    if (self.cellStyle & MHImageBrowserCellStyleSubtitled) {
+        cellSize.height += 20;
+    }
+    // make extra 5 pixel margin at the bottom
+    if ((NSInteger)cellSize.height != (NSInteger)self.cellSize.height) {
+        cellSize.height += 5;
+    }
+    return cellSize;
 }
 
 - (void)collectionView:(JNWCollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath

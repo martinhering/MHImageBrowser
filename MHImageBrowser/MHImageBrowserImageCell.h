@@ -7,13 +7,14 @@
 //
 
 #import <JNWCollectionView/JNWCollectionView.h>
+#import "MHImageBrowserTypes.h"
 
 @interface MHImageBrowserImageCell : JNWCollectionViewCell
 
 + (Class) placeholderViewClass;
 
-@property (nonatomic, strong) id<NSObject> objectValue;
-@property (nonatomic, strong) id<NSObject> reference;
+@property (nonatomic, strong) id<MHImageBrowserImageItem> itemValue;
+@property (nonatomic, assign) MHImageBrowserCellStyle style;
 
 - (void) asyncRedraw;
 

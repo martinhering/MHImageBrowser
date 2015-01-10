@@ -74,6 +74,7 @@
 		1BAC9CB61A60117400E22238 /* _MHImageBrowserCacheManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = _MHImageBrowserCacheManager.m; sourceTree = "<group>"; };
 		1BAC9CB81A60147200E22238 /* _MHImageThumbnailOperation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = _MHImageThumbnailOperation.h; sourceTree = "<group>"; };
 		1BAC9CB91A60147200E22238 /* _MHImageThumbnailOperation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = _MHImageThumbnailOperation.m; sourceTree = "<group>"; };
+		1BAC9CBB1A61448200E22238 /* MHImageBrowserTypes.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MHImageBrowserTypes.h; sourceTree = "<group>"; };
 		1BD441F21A5554D1001C0B58 /* MHImageBrowser.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MHImageBrowser.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		1BD441F61A5554D1001C0B58 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		1BD441F71A5554D1001C0B58 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
@@ -136,6 +137,7 @@
 			children = (
 				1BD441F71A5554D1001C0B58 /* AppDelegate.h */,
 				1BD441F81A5554D1001C0B58 /* AppDelegate.m */,
+				1BAC9CBB1A61448200E22238 /* MHImageBrowserTypes.h */,
 				1BD442281A555985001C0B58 /* MHImageBrowserViewController.h */,
 				1BD442291A555985001C0B58 /* MHImageBrowserViewController.m */,
 				1BD4422B1A555CC9001C0B58 /* MHImageBrowserImageCell.h */,

@@ -9,7 +9,7 @@
 #import <Foundation/Foundation.h>
 
 @interface _MHImageBrowserCacheManager : NSObject
-
++ (_MHImageBrowserCacheManager *)sharedManager;
 - (void) generateThumbnailForURL:(NSURL*)url size:(CGFloat)size completion:(void (^)(NSImage* thumbnail, BOOL async))completionBlock;
 - (void) cancelGeneratingThumbnailForURL:(NSURL*)url;
 @end

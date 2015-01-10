@@ -7,34 +7,23 @@
 //
 
 #import <Cocoa/Cocoa.h>
+#import "MHImageBrowserTypes.h"
 
-@protocol MHImageBrowserImageItem;
 @protocol MHImageBrowserViewControllerDataSource;
-
 
 @interface MHImageBrowserViewController : NSViewController
 @property (nonatomic) NSSize cellSize;
 @property (nonatomic, readonly) NSScrollView* contentScrollView;
-
 @property (nonatomic, strong) NSColor *backgroundColor;
-
+@property (nonatomic, assign) MHImageBrowserCellStyle cellStyle;
 @property (nonatomic, weak) IBOutlet id<MHImageBrowserViewControllerDataSource> dataSource;
+
+- (void) reloadData;
 @end
 
-typedef NS_ENUM(NSInteger, MHImageBrowserImageItemRepresentationType) {
-    MHImageBrowserImageItemRepresentationTypeURL,
-    MHImageBrowserImageItemRepresentationTypeNSImage
-};
 
-@protocol MHImageBrowserImageItem <NSObject>
-@property (nonatomic, strong, readonly) NSString* UID;
-@property (nonatomic, assign, readonly) MHImageBrowserImageItemRepresentationType representationType;
-@property (nonatomic, strong, readonly) id representation;
-@property (nonatomic, assign, readonly) NSUInteger version;
-@property (nonatomic, strong, readonly) NSString* title;
-@property (nonatomic, strong, readonly) NSString* subtitle;
-@property (nonatomic, assign, readonly, getter=isSelectable) BOOL selectable;
-@end
+#pragma mark -
+
 
 @protocol MHImageBrowserViewControllerDataSource <NSObject>
 @required

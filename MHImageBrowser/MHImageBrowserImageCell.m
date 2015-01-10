@@ -8,12 +8,18 @@
 
 #import "MHImageBrowserImageCell.h"
 #import "MHImageBrowserPlaceHolderView.h"
+#import "_MHImageBrowserCacheManager.h"
+
 #import <QuartzCore/QuartzCore.h>
 
 @interface MHImageBrowserImageCell ()
 @property (nonatomic, strong) NSView* imageView;
 @property (nonatomic, strong) NSView* selectionBackgroundView;
 @property (nonatomic, strong) MHImageBrowserPlaceHolderView* placeholderView;
+@property (nonatomic, strong, readwrite) NSTextField* titleTextField;
+
+@property (nonatomic, strong) NSImage* imageValue;
+@property (nonatomic, strong) NSString* titleValue;
 @end
 
 @implementation MHImageBrowserImageCell
@@ -30,6 +36,7 @@
         _selectionBackgroundView.autoresizingMask = NSViewWidthSizable | NSViewHeightSizable;
         _selectionBackgroundView.wantsLayer = YES;
         _selectionBackgroundView.layer.cornerRadius = 5.f;
+        _selectionBackgroundView.layer.backgroundColor = [[NSColor colorWithRed:8/255. green:109/255. blue:214/255. alpha:1] CGColor];
         [self.contentView addSubview:_selectionBackgroundView];
         
         _placeholderView = [[[[self class] placeholderViewClass] alloc] initWithFrame:frameRect];
@@ -39,10 +46,25 @@
         _placeholderView.layerContentsRedrawPolicy = NSViewLayerContentsRedrawOnSetNeedsDisplay;
         [self.contentView addSubview:_placeholderView];
         
-        _imageView = [[NSView alloc] initWithFrame:frameRect];
+        _imageView = [[NSView alloc] initWithFrame:NSZeroRect];
         _imageView.autoresizingMask = NSViewWidthSizable | NSViewHeightSizable;
         _imageView.wantsLayer = YES;
         [self.contentView addSubview:_imageView];
+        
+        _titleTextField = [[NSTextField alloc] initWithFrame:NSZeroRect];
+        _titleTextField.autoresizingMask = NSViewWidthSizable | NSViewMaxYMargin;
+        _titleTextField.wantsLayer = YES;
+        _titleTextField.font = [NSFont systemFontOfSize:12];
+        _titleTextField.stringValue = @"Test";
+        _titleTextField.hidden = YES;
+        _titleTextField.backgroundColor = [NSColor redColor];
+        _titleTextField.bezeled = NO;
+        _titleTextField.alignment = NSCenterTextAlignment;
+        _titleTextField.lineBreakMode = NSLineBreakByTruncatingTail;
+        _titleTextField.editable = NO;
+        _titleTextField.allowsExpansionToolTips = YES;
+        [self.contentView addSubview:_titleTextField];
+        
     }
     return self;
 }
@@ -55,17 +77,30 @@
 - (void)prepareForReuse
 {
     [super prepareForReuse];
+    
+//    id<MHImageBrowserImageItem> item = self.itemValue;
+//    if (item.representationType == MHImageBrowserImageItemRepresentationTypeURL)
+//    {
+//        NSURL* url = (NSURL*)item.representation;
+//        if ([url isKindOfClass:[NSURL class]]) {
+//            [[_MHImageBrowserCacheManager sharedManager] cancelGeneratingThumbnailForURL:url];
+//        }
+//    }
+    
     self.placeholderView.hidden = NO;
-    self.objectValue = nil;
+    self.itemValue = nil;
 }
 
 - (void)layout {
     [super layout];
     
+    NSRect bounds = self.bounds;
+    NSRect rectangularBounds = NSMakeRect(0, NSHeight(bounds)-NSWidth(bounds), NSWidth(bounds), NSWidth(bounds));
+    self.placeholderView.frame = rectangularBounds;
     
-    NSRect imageViewRect = NSInsetRect(self.bounds, 5, 5);
+    NSRect imageViewRect = NSInsetRect(rectangularBounds, 5, 5);
     
-    NSImage* image = (NSImage*)self.objectValue;
+    NSImage* image = (NSImage*)self.imageValue;
     if (image)
     {
         NSSize imageSize = [image size];
@@ -74,7 +109,7 @@
         if (imageSize.width >= imageSize.height) {
             NSRect scaledRect = imageViewRect;
             scaledRect.size.height = imageViewRect.size.width / aspectRatio;
-            scaledRect.origin.y = (imageViewRect.size.height - scaledRect.size.height) / 2 + 5;
+            scaledRect.origin.y = NSMinY(rectangularBounds)+(imageViewRect.size.height - scaledRect.size.height) / 2 + 5;
             imageViewRect = scaledRect;
         }
         else
@@ -84,28 +119,96 @@
             scaledRect.origin.x = (imageViewRect.size.width - scaledRect.size.width) / 2 + 5;
             imageViewRect = scaledRect;
         }
-        
     }
+    
+    if (self.style && MHImageBrowserCellStyleTitled) {
+        self.titleTextField.hidden = NO;
+        self.titleTextField.frame = NSMakeRect(5, NSMinY(rectangularBounds)-20, NSWidth(bounds)-10, 20);
+    }
+    else {
+        self.titleTextField.hidden = YES;
+    }
+    
+    [self _setBackgroundColors];
     
     
     if (!NSEqualRects(imageViewRect, self.imageView.frame)) {
         self.imageView.frame = imageViewRect;
-        self.selectionBackgroundView.frame = NSInsetRect(imageViewRect, -5, -5);
+        if (self.style & MHImageBrowserCellStyleSelectionFollowsImageOutline) {
+            self.selectionBackgroundView.frame = NSInsetRect(imageViewRect, -5, -5);
+        } else {
+            self.selectionBackgroundView.frame = self.bounds;
+        }
     }
 }
 
+- (void) _setBackgroundColors {
+    if (!(self.style & MHImageBrowserCellStyleSelectionFollowsImageOutline)) {
+        self.titleTextField.backgroundColor = (self.selected) ? [NSColor colorWithRed:8/255. green:109/255. blue:214/255. alpha:1] : self.collectionView.backgroundColor;
+    } else {
+        self.titleTextField.backgroundColor = self.collectionView.backgroundColor;
+    }
+}
 
-- (void) setObjectValue:(id)objectValue
+- (void) _setImageValue
 {
-    if (_objectValue != objectValue) {
-        _objectValue = objectValue;
+    id<MHImageBrowserImageItem> itemValue = self.itemValue;
+    if (itemValue.representationType == MHImageBrowserImageItemRepresentationTypeNSImage) {
+        self.imageValue = itemValue.representation;
+    }
+    else if (itemValue.representationType == MHImageBrowserImageItemRepresentationTypeURL)
+    {
+        NSURL* url = (NSURL*)itemValue.representation;
+        if ([url isKindOfClass:[NSURL class]])
+        {
+            __weak MHImageBrowserImageCell* weakSelf = self;
+            [[_MHImageBrowserCacheManager sharedManager] generateThumbnailForURL:url size:NSWidth(self.bounds) completion:^(NSImage* thumbnail, BOOL async) {
+                NSURL* myURL = (NSURL*)self.itemValue.representation;
+                if (thumbnail && [myURL isEqual:url]) {
+                    weakSelf.imageValue = thumbnail;
+                    [weakSelf layout];
+                }
+            }];
+        }
+    }
+}
+
+- (void) setItemValue:(id<MHImageBrowserImageItem>)itemValue
+{
+    if (_itemValue != itemValue) {
+        _itemValue = itemValue;
         
-        NSImage* image = (NSImage*)objectValue;
-        self.imageView.layer.contents = image;
-        self.imageView.layer.backgroundColor = self.layer.backgroundColor;
-        self.placeholderView.hidden = (image != nil);
-        
+        if (!itemValue) {
+            self.imageValue = nil;
+            self.titleValue = nil;
+        }
+        else
+        {
+            self.titleValue = itemValue.title;
+            
+        }
+    }
+    if (itemValue) {
+        [self _setImageValue];
         [self layout];
+    }
+}
+
+- (void) setImageValue:(NSImage *)imageValue {
+    if (_imageValue != imageValue) {
+        _imageValue = imageValue;
+        
+        self.imageView.layer.contents = imageValue;
+        self.imageView.layer.backgroundColor = self.layer.backgroundColor;
+        self.placeholderView.hidden = (imageValue != nil);
+    }
+}
+
+- (void) setTitleValue:(NSString *)titleValue
+{
+    if (_titleValue != titleValue) {
+        _titleValue = titleValue;
+        self.titleTextField.stringValue = (titleValue) ? titleValue : @"";
     }
 }
 
@@ -113,8 +216,8 @@
 - (void)setSelected:(BOOL)selected
 {
     [super setSelected:selected];
-    
-    self.selectionBackgroundView.layer.backgroundColor = (selected) ? [[NSColor colorWithRed:8/255. green:109/255. blue:214/255. alpha:1] CGColor] : [[NSColor clearColor] CGColor];
+    [self _setBackgroundColors];
+    self.selectionBackgroundView.hidden = !selected;
 }
 
 

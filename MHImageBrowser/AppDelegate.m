@@ -23,21 +23,28 @@
 - (id) init
 {
     if ((self = [super init])) {
-        [self generateImages];
+
     }
     return self;
 }
 
-- (void)applicationDidFinishLaunching:(NSNotification *)aNotification
+- (void) awakeFromNib
 {
     self.window.appearance = [NSAppearance appearanceNamed:NSAppearanceNameVibrantDark];
     self.window.backgroundColor = [NSColor blackColor];
     
     // Insert code here to initialize your application
     self.imageBrowserViewController.backgroundColor = [NSColor colorWithCalibratedWhite:0.15 alpha:1.];
-    
+    self.imageBrowserViewController.cellStyle = MHImageBrowserCellStyleTitled | MHImageBrowserCellStyleSelectionFollowsImageOutline;
     
     self.cellSizeValue = self.imageBrowserViewController.cellSize.width;
+    
+    [self generateImages];
+}
+
+- (void)applicationDidFinishLaunching:(NSNotification *)aNotification
+{
+    
 }
 
 - (void)applicationWillTerminate:(NSNotification *)aNotification {
