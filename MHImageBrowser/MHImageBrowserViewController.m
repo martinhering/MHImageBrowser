@@ -9,7 +9,7 @@
 #import "MHImageBrowserViewController.h"
 #import <JNWCollectionView/JNWCollectionView.h>
 
-#import "MHImageBrowserImageCell.h"
+#import "_MHImageBrowserImageCell.h"
 #import "_MHImageBrowserCacheManager.h"
 
 static NSString * const kImageCellIdentifier = @"ImageCellIdentifier";
@@ -26,7 +26,8 @@ static NSString * const kImageCellIdentifier = @"ImageCellIdentifier";
 @property (nonatomic, strong) NSIndexPath* selectedIndexPath;
 @property (nonatomic) BOOL userScroll;
 @property (nonatomic, weak) id <NSObject> scrollObserver;
-@property (nonatomic, strong) _MHImageBrowserCacheManager* _cacheManager;
+@property (nonatomic, strong) _MHImageBrowserCacheManager* cacheManager;
+@property (nonatomic, assign) NSUInteger thumbnailSize;
 @end
 
 @implementation MHImageBrowserViewController
@@ -35,7 +36,7 @@ static NSString * const kImageCellIdentifier = @"ImageCellIdentifier";
     [super viewDidLoad];
     // Do view setup here.
     
-    self._cacheManager = [[_MHImageBrowserCacheManager alloc] init];
+    self.cacheManager = [[_MHImageBrowserCacheManager alloc] init];
     
     JNWCollectionView* collectionView = [[JNWCollectionView alloc] initWithFrame:self.view.bounds];
     collectionView.autoresizingMask = NSViewWidthSizable | NSViewHeightSizable;
@@ -78,7 +79,10 @@ static NSString * const kImageCellIdentifier = @"ImageCellIdentifier";
     [[NSNotificationCenter defaultCenter] removeObserver:self.scrollObserver];
 }
 
-- (void) reloadData {
+- (void) reloadData
+{
+    //get rid of the cached data
+    self.cacheManager = [[_MHImageBrowserCacheManager alloc] init];
     [self.collectionView reloadData];
 }
 
@@ -109,11 +113,37 @@ static NSString * const kImageCellIdentifier = @"ImageCellIdentifier";
     if (!NSEqualSizes(_cellSize, cellSize)) {
         _cellSize = cellSize;
         
+        self.thumbnailSize = [_MHImageBrowserCacheManager thumbnailSizeForCellSize:cellSize.width];
+        
         [self.collectionView.collectionViewLayout invalidateLayout];
         
         // asynchronously redraw cells
-        [NSObject cancelPreviousPerformRequestsWithTarget:self selector:@selector(_asyncRedrawAllCells) object:nil];
-        [self performSelector:@selector(_asyncRedrawAllCells) withObject:nil afterDelay:0.02];
+        [NSObject cancelPreviousPerformRequestsWithTarget:self selector:@selector(_coalescedRedrawCells) object:nil];
+        [self performSelector:@selector(_coalescedRedrawCells) withObject:nil afterDelay:0.02];
+    }
+}
+
+- (void) setThumbnailSize:(NSUInteger)thumbnailSize
+{
+    if (_thumbnailSize != thumbnailSize) {
+        _thumbnailSize = thumbnailSize;
+        
+        [NSObject cancelPreviousPerformRequestsWithTarget:self selector:@selector(_coalescedUpdateCellThumbnailSize) object:nil];
+        [self performSelector:@selector(_coalescedUpdateCellThumbnailSize) withObject:nil afterDelay:0.02];
+    }
+}
+
+- (void) _coalescedUpdateCellThumbnailSize {
+    for(NSIndexPath* indexPath in [self.collectionView indexPathsForVisibleItems]) {
+        MHImageBrowserImageCell *cell = (MHImageBrowserImageCell *)[self.collectionView cellForItemAtIndexPath:indexPath];
+        cell.thumbnailSize = self.thumbnailSize;
+    }
+}
+
+- (void) _coalescedRedrawCells {
+    for(NSIndexPath* indexPath in [self.collectionView indexPathsForVisibleItems]) {
+        MHImageBrowserImageCell *cell = (MHImageBrowserImageCell *)[self.collectionView cellForItemAtIndexPath:indexPath];
+        [cell asyncRedraw];
     }
 }
 
@@ -151,14 +181,8 @@ static NSString * const kImageCellIdentifier = @"ImageCellIdentifier";
     return indexPathes[middleIndex];
 }
 
-- (void) _asyncRedrawAllCells
-{
-    for(NSIndexPath* indexPath in [self.collectionView indexPathsForVisibleItems])
-    {
-        MHImageBrowserImageCell *cell = (MHImageBrowserImageCell *)[self.collectionView cellForItemAtIndexPath:indexPath];
-        [cell asyncRedraw];
-    }
-}
+
+
 
 #pragma mark Data source
 
@@ -167,6 +191,8 @@ static NSString * const kImageCellIdentifier = @"ImageCellIdentifier";
 {
     MHImageBrowserImageCell *cell = (MHImageBrowserImageCell *)[collectionView dequeueReusableCellWithIdentifier:kImageCellIdentifier];
     cell.style = self.cellStyle;
+    cell.thumbnailSize = self.thumbnailSize;
+    cell.cacheManager = self.cacheManager;
     return cell;
 }
 

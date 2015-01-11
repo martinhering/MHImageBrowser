@@ -47,6 +47,11 @@
     
 }
 
+- (IBAction) reload:(id)sender
+{
+    [self.imageBrowserViewController reloadData];
+}
+
 - (void)applicationWillTerminate:(NSNotification *)aNotification {
     // Insert code here to tear down your application
 }
@@ -66,7 +71,7 @@
     
     
     NSFileManager* fman = [NSFileManager defaultManager];
-    NSString* dirPath = [@"~/Desktop/Neue Bilder" stringByExpandingTildeInPath];
+    NSString* dirPath = [@"~/Desktop/Photos" stringByExpandingTildeInPath];
     NSArray* content = [fman contentsOfDirectoryAtPath:dirPath error:nil];
     for(NSString* path in content) {
         NSString* fullpath = [dirPath stringByAppendingPathComponent:path];
@@ -83,36 +88,6 @@
             [imageItems addObject:item];
         }
     }
-    
-//    NSInteger numberOfImages = 30;
-//    NSMutableArray *imageItems = [NSMutableArray array];
-//    
-//    for (int i = 0; i < numberOfImages; i++) {
-//        
-//        // Just get a randomly-tinted template image.
-//        NSImage *image = [NSImage imageWithSize:CGSizeMake(150.f, 150.f) flipped:NO drawingHandler:^BOOL(NSRect dstRect) {
-//            [[NSImage imageNamed:NSImageNameUser] drawInRect:dstRect fromRect:CGRectZero operation:NSCompositeSourceOver fraction:1];
-//            
-//            CGFloat hue = arc4random() % 256 / 256.0;
-//            CGFloat saturation = arc4random() % 128 / 256.0 + 0.5;
-//            CGFloat brightness = arc4random() % 128 / 256.0 + 0.5;
-//            NSColor *color = [NSColor colorWithCalibratedHue:hue saturation:saturation brightness:brightness alpha:1];
-//            
-//            [color set];
-//            NSRectFillUsingOperation(dstRect, NSCompositeDestinationAtop);
-//            
-//            return YES;
-//        }];
-//        
-//        DemoImageItem* item = [[DemoImageItem alloc] init];
-//        item.UID = [@(i) stringValue];
-//        item.representationType = MHImageBrowserImageItemRepresentationTypeNSImage;
-//        item.representation = image;
-//        item.title = @"test";
-//        item.selectable = YES;
-//        
-//        [imageItems addObject:item];
-//    }
     
     self.imageItems = imageItems;
 }

@@ -8,6 +8,7 @@
 
 #import "_MHImageBrowserCacheManager.h"
 #import "_MHImageThumbnailOperation.h"
+#import "_MHMultiSizeImageCacheItem.h"
 
 @interface _MHImageBrowserCacheManager ()
 @property (nonatomic, strong) NSOperationQueue* operationQueue;
@@ -15,14 +16,6 @@
 @end
 
 @implementation _MHImageBrowserCacheManager
-
-+ (_MHImageBrowserCacheManager *)sharedManager
-{
-    static dispatch_once_t once;
-    static _MHImageBrowserCacheManager *singleton;
-    dispatch_once(&once, ^ { singleton = [[_MHImageBrowserCacheManager alloc] init]; });
-    return singleton;
-}
 
 - (instancetype) init
 {
@@ -35,7 +28,7 @@
     return self;
 }
 
-- (NSUInteger) thumbnailSizeForCellSize:(CGFloat)size
++ (NSUInteger) thumbnailSizeForCellSize:(CGFloat)size
 {
     NSUInteger i=(NSUInteger)size;;
     NSUInteger b=0;
@@ -47,9 +40,12 @@
     return MAX(128, thumbnailSize);
 }
 
-- (NSString*) cacheKeyForURL:(NSURL*)url thumbnailSize:(NSUInteger)size
+- (NSImage*) cachedThumbnailForURL:(NSURL*)url sizeClosestToSize:(CGFloat)size
 {
-    return [NSString stringWithFormat:@"%@_%lu", [url absoluteString], (long)size];
+    NSUInteger thumbnailSize = [_MHImageBrowserCacheManager thumbnailSizeForCellSize:size];
+    NSString* cacheKey = [url absoluteString];
+    _MHMultiSizeImageCacheItem* cacheItem = self.thumbnailCache[cacheKey];
+    return [cacheItem imageWithSizeClosestToSize:thumbnailSize];
 }
 
 - (void) generateThumbnailForURL:(NSURL*)url size:(CGFloat)size completion:(void (^)(NSImage* thumbnail, BOOL async))completionBlock
@@ -58,10 +54,10 @@
         return;
     }
     
-    NSUInteger thumbnailSize = [self thumbnailSizeForCellSize:size];
-    NSString* cacheKey = [self cacheKeyForURL:url thumbnailSize:thumbnailSize];
-    //NSLog(@"cacheKey %@", cacheKey);
-    NSImage* cachedThumbnail = self.thumbnailCache[cacheKey];
+    NSUInteger thumbnailSize = [_MHImageBrowserCacheManager thumbnailSizeForCellSize:size];
+    NSString* cacheKey = [url absoluteString];
+    _MHMultiSizeImageCacheItem* cacheItem = self.thumbnailCache[cacheKey];
+    NSImage* cachedThumbnail = [cacheItem imageWithSize:thumbnailSize];
     if (cachedThumbnail) {
         completionBlock(cachedThumbnail, NO);
         return;
@@ -77,7 +73,13 @@
             dispatch_async(dispatch_get_main_queue(), ^{
                 NSImage* thumbnail = strongOperation.thumbnail;
                 if (thumbnail) {
-                    self.thumbnailCache[cacheKey] = thumbnail;
+                    _MHMultiSizeImageCacheItem* cacheItem = self.thumbnailCache[cacheKey];
+                    if (!cacheItem) {
+                        cacheItem = [[_MHMultiSizeImageCacheItem alloc] init];
+                        self.thumbnailCache[cacheKey] = cacheItem;
+                    }
+                    
+                    [cacheItem addImage:thumbnail withSize:thumbnailSize];
                 }
                 completionBlock(thumbnail, YES);
             });

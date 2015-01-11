@@ -66,6 +66,8 @@
             CGImageRef imageRef = [self imageWithFileURL:self.url];
             if (imageRef) {
                 self.thumbnail = [[NSImage alloc] initWithCGImage:imageRef size:NSZeroSize];
+                CFRelease(imageRef);
+                imageRef = NULL;
             }
         }
     }

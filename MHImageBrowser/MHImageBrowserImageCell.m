@@ -6,7 +6,7 @@
 //  Copyright (c) 2015 Martin Hering. All rights reserved.
 //
 
-#import "MHImageBrowserImageCell.h"
+#import "_MHImageBrowserImageCell.h"
 #import "MHImageBrowserPlaceHolderView.h"
 #import "_MHImageBrowserCacheManager.h"
 
@@ -20,6 +20,8 @@
 
 @property (nonatomic, strong) NSImage* imageValue;
 @property (nonatomic, strong) NSString* titleValue;
+@property (nonatomic, assign) NSUInteger thumbnailSize;
+@property (nonatomic, strong) _MHImageBrowserCacheManager* cacheManager;
 @end
 
 @implementation MHImageBrowserImageCell
@@ -161,8 +163,9 @@
         NSURL* url = (NSURL*)itemValue.representation;
         if ([url isKindOfClass:[NSURL class]])
         {
+            self.imageValue = [self.cacheManager cachedThumbnailForURL:url sizeClosestToSize:NSWidth(self.bounds)];
             __weak MHImageBrowserImageCell* weakSelf = self;
-            [[_MHImageBrowserCacheManager sharedManager] generateThumbnailForURL:url size:NSWidth(self.bounds) completion:^(NSImage* thumbnail, BOOL async) {
+            [self.cacheManager generateThumbnailForURL:url size:NSWidth(self.bounds) completion:^(NSImage* thumbnail, BOOL async) {
                 NSURL* myURL = (NSURL*)self.itemValue.representation;
                 if (thumbnail && [myURL isEqual:url]) {
                     weakSelf.imageValue = thumbnail;
@@ -209,6 +212,14 @@
     if (_titleValue != titleValue) {
         _titleValue = titleValue;
         self.titleTextField.stringValue = (titleValue) ? titleValue : @"";
+    }
+}
+
+- (void) setThumbnailSize:(NSUInteger)thumbnailSize
+{
+    if (_thumbnailSize != thumbnailSize) {
+        _thumbnailSize = thumbnailSize;
+        [self _setImageValue];
     }
 }
 
