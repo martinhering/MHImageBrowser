@@ -12,7 +12,10 @@
 
 #import <QuartzCore/QuartzCore.h>
 
-@interface MHImageBrowserImageCell ()
+static void* const kObserverContextItemTitle = @"itemTitle";
+static void* const kObserverContextItemTitleEditable = @"itemTitleEditable";
+
+@interface MHImageBrowserImageCell () <NSTextFieldDelegate>
 @property (nonatomic, strong) NSView* imageView;
 @property (nonatomic, strong) NSView* selectionBackgroundView;
 @property (nonatomic, strong) MHImageBrowserPlaceHolderView* placeholderView;
@@ -57,7 +60,6 @@
         _titleTextField.autoresizingMask = NSViewWidthSizable | NSViewMaxYMargin;
         _titleTextField.wantsLayer = YES;
         _titleTextField.font = [NSFont systemFontOfSize:12];
-        _titleTextField.stringValue = @"Test";
         _titleTextField.hidden = YES;
         _titleTextField.backgroundColor = [NSColor redColor];
         _titleTextField.bezeled = NO;
@@ -65,8 +67,8 @@
         _titleTextField.lineBreakMode = NSLineBreakByTruncatingTail;
         _titleTextField.editable = NO;
         _titleTextField.allowsExpansionToolTips = YES;
+        _titleTextField.delegate = self;
         [self.contentView addSubview:_titleTextField];
-        
     }
     return self;
 }
@@ -176,9 +178,38 @@
     }
 }
 
+- (void) observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context
+{
+    if (context == kObserverContextItemTitle) {
+        id<MHImageBrowserImageItem> itemValue = object;
+        self.titleValue = itemValue.title;
+    }
+    else if (context == kObserverContextItemTitleEditable) {
+        id<MHImageBrowserImageItem> itemValue = object;
+        self.titleTextField.editable = (self.selected) ? itemValue.titleEditable : NO;
+        
+        // resign first responder in case it's currently editing
+        if (!self.titleTextField.editable) {
+            NSText* editor = [self.titleTextField.window fieldEditor:NO forObject:self.titleTextField];
+            if (editor.superview.superview == self.titleTextField) {
+                [self.titleTextField.window makeFirstResponder:self.collectionView];
+            }
+        }
+    }
+}
+
+#pragma mark -
+
+
 - (void) setItemValue:(id<MHImageBrowserImageItem>)itemValue
 {
     if (_itemValue != itemValue) {
+        
+        if (_itemValue) {
+            [(NSObject*)_itemValue removeObserver:self forKeyPath:@"title" context:kObserverContextItemTitle];
+            [(NSObject*)_itemValue removeObserver:self forKeyPath:@"titleEditable" context:kObserverContextItemTitleEditable];
+        }
+        
         _itemValue = itemValue;
         
         if (!itemValue) {
@@ -189,6 +220,8 @@
         {
             self.titleValue = itemValue.title;
             
+            [(NSObject*)itemValue addObserver:self forKeyPath:@"title" options:NSKeyValueObservingOptionNew context:kObserverContextItemTitle];
+            [(NSObject*)itemValue addObserver:self forKeyPath:@"titleEditable" options:NSKeyValueObservingOptionNew context:kObserverContextItemTitleEditable];
         }
     }
     if (itemValue) {
@@ -229,7 +262,25 @@
     [super setSelected:selected];
     [self _setBackgroundColors];
     self.selectionBackgroundView.hidden = !selected;
+    
+    self.titleTextField.editable = (selected) ? self.itemValue.titleEditable : NO;
+    if (!self.titleTextField.editable) {
+        NSText* editor = [self.titleTextField.window fieldEditor:NO forObject:self.titleTextField];
+        if (editor.superview.superview == self.titleTextField) {
+            [self.titleTextField.window makeFirstResponder:self.collectionView];
+        }
+    }
 }
 
+#pragma mark - NSTextFieldDelegate
 
+- (BOOL)control:(NSControl *)control textView:(NSTextView *)textView doCommandBySelector:(SEL)command
+{
+    if (command == @selector(insertNewline:)) {
+        self.itemValue.title = [[[textView textStorage] string] copy];
+        [textView.window makeFirstResponder:self.collectionView];
+        return YES;
+    }
+    return NO;
+}
 @end

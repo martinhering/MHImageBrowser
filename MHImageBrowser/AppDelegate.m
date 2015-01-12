@@ -14,11 +14,15 @@
 
 @property (weak) IBOutlet NSWindow *window;
 @property (weak) IBOutlet MHImageBrowserViewController* imageBrowserViewController;
+@property (weak) IBOutlet NSArrayController* imagesArrayController;
 
 @property (nonatomic, strong) NSArray* imageItems;
+@property (nonatomic, strong) NSIndexSet* selectionIndexes;
 @end
 
-@implementation AppDelegate
+@implementation AppDelegate {
+    BOOL _selectionFromImageBrowser;
+}
 
 - (id) init
 {
@@ -84,6 +88,7 @@
             item.representation = [NSURL fileURLWithPath:fullpath];
             item.title = path;
             item.selectable = YES;
+            item.titleEditable = YES;
             
             [imageItems addObject:item];
         }
@@ -102,11 +107,43 @@
 
 - (NSUInteger) imageBrowser:(MHImageBrowserViewController *)imageBrowser numberOfItemsInGroup:(NSUInteger)group
 {
-    return [self.imageItems count];
+    return [[self.imagesArrayController arrangedObjects] count];
 }
 
 - (id <MHImageBrowserImageItem>) imageBrowser:(MHImageBrowserViewController *)imageBrowser itemAtIndexPath:(NSIndexPath*)indexPath
 {
-    return self.imageItems[[indexPath indexAtPosition:1]];
+    NSArray* arrangedObjects = [self.imagesArrayController arrangedObjects];
+    return arrangedObjects[[indexPath indexAtPosition:1]];
 }
+
+#pragma mark - MHImageBrowserViewControllerDelegate
+
+- (void) setSelectionIndexes:(NSIndexSet *)selectionIndexes
+{
+    if (_selectionIndexes != selectionIndexes) {
+        _selectionIndexes = selectionIndexes;
+        
+        if (!_selectionFromImageBrowser) {
+            NSMutableArray* indexPathes = [[NSMutableArray alloc] init];
+            [selectionIndexes enumerateIndexesUsingBlock:^(NSUInteger idx, BOOL *stop) {
+                [indexPathes addObject:[NSIndexPath indexPathForItem:idx inGroup:0]];
+            }];
+            [self.imageBrowserViewController setSelectionIndexPathes:indexPathes byExtendingSelection:NO];
+        }
+    }
+}
+
+- (void) imageBrowserSelectionDidChange:(MHImageBrowserViewController *)imageBrowser
+{
+    NSArray* indexPathes = [self.imageBrowserViewController indexPathsForSelectedItems];
+    
+    NSMutableIndexSet* indexSet = [[NSMutableIndexSet alloc] init];
+    for(NSIndexPath* indexPath in indexPathes) {
+        [indexSet addIndex:indexPath.item];
+    }
+    _selectionFromImageBrowser = YES;
+    self.selectionIndexes = indexSet;
+    _selectionFromImageBrowser = NO;
+}
+
 @end

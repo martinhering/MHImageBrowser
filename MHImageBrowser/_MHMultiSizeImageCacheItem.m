@@ -41,7 +41,6 @@
     NSArray* allSizes = [[[[self.images allKeys] sortedArrayUsingSelector:@selector(compare:)] reverseObjectEnumerator] allObjects];
     for(NSNumber* sizeValue in allSizes) {
         if ([sizeValue unsignedIntegerValue] < size) {
-            NSLog(@"searching for %lu, using %lu", size, [sizeValue unsignedIntegerValue]);
             return self.images[sizeValue];
         }
     }

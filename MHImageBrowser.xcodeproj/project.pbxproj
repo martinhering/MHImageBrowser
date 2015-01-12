@@ -11,6 +11,7 @@
 		1BAC9CB31A5FED1600E22238 /* MHImageBrowserPlaceHolderView.m in Sources */ = {isa = PBXBuildFile; fileRef = 1BAC9CB21A5FED1600E22238 /* MHImageBrowserPlaceHolderView.m */; };
 		1BAC9CB71A60117400E22238 /* _MHImageBrowserCacheManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 1BAC9CB61A60117400E22238 /* _MHImageBrowserCacheManager.m */; };
 		1BAC9CBA1A60147200E22238 /* _MHImageThumbnailOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = 1BAC9CB91A60147200E22238 /* _MHImageThumbnailOperation.m */; };
+		1BAC9CC21A63C70300E22238 /* NSIndexPath+MHImageBrowser.m in Sources */ = {isa = PBXBuildFile; fileRef = 1BAC9CC11A63C70300E22238 /* NSIndexPath+MHImageBrowser.m */; };
 		1BD441F91A5554D1001C0B58 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 1BD441F81A5554D1001C0B58 /* AppDelegate.m */; };
 		1BD441FB1A5554D1001C0B58 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 1BD441FA1A5554D1001C0B58 /* main.m */; };
 		1BD441FD1A5554D1001C0B58 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 1BD441FC1A5554D1001C0B58 /* Images.xcassets */; };
@@ -79,6 +80,8 @@
 		1BAC9CB81A60147200E22238 /* _MHImageThumbnailOperation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = _MHImageThumbnailOperation.h; sourceTree = "<group>"; };
 		1BAC9CB91A60147200E22238 /* _MHImageThumbnailOperation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = _MHImageThumbnailOperation.m; sourceTree = "<group>"; };
 		1BAC9CBB1A61448200E22238 /* MHImageBrowserTypes.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MHImageBrowserTypes.h; sourceTree = "<group>"; };
+		1BAC9CC01A63C70300E22238 /* NSIndexPath+MHImageBrowser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSIndexPath+MHImageBrowser.h"; sourceTree = "<group>"; };
+		1BAC9CC11A63C70300E22238 /* NSIndexPath+MHImageBrowser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSIndexPath+MHImageBrowser.m"; sourceTree = "<group>"; };
 		1BD441F21A5554D1001C0B58 /* MHImageBrowser.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MHImageBrowser.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		1BD441F61A5554D1001C0B58 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		1BD441F71A5554D1001C0B58 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
@@ -144,8 +147,8 @@
 				1BAC9CBB1A61448200E22238 /* MHImageBrowserTypes.h */,
 				1BD442281A555985001C0B58 /* MHImageBrowserViewController.h */,
 				1BD442291A555985001C0B58 /* MHImageBrowserViewController.m */,
-				1BD4422B1A555CC9001C0B58 /* MHImageBrowserImageCell.h */,
 				1B5024421A62CF06000E6681 /* _MHImageBrowserImageCell.h */,
+				1BD4422B1A555CC9001C0B58 /* MHImageBrowserImageCell.h */,
 				1BD4422C1A555CC9001C0B58 /* MHImageBrowserImageCell.m */,
 				1BAC9CB11A5FED1600E22238 /* MHImageBrowserPlaceHolderView.h */,
 				1BAC9CB21A5FED1600E22238 /* MHImageBrowserPlaceHolderView.m */,
@@ -155,6 +158,8 @@
 				1B50243F1A62C8FF000E6681 /* _MHMultiSizeImageCacheItem.m */,
 				1BAC9CB81A60147200E22238 /* _MHImageThumbnailOperation.h */,
 				1BAC9CB91A60147200E22238 /* _MHImageThumbnailOperation.m */,
+				1BAC9CC01A63C70300E22238 /* NSIndexPath+MHImageBrowser.h */,
+				1BAC9CC11A63C70300E22238 /* NSIndexPath+MHImageBrowser.m */,
 				1BD4422F1A5577AC001C0B58 /* DemoImageItem.h */,
 				1BD442301A5577AC001C0B58 /* DemoImageItem.m */,
 				1BD441FC1A5554D1001C0B58 /* Images.xcassets */,
@@ -323,6 +328,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				1BAC9CC21A63C70300E22238 /* NSIndexPath+MHImageBrowser.m in Sources */,
 				1BAC9CB31A5FED1600E22238 /* MHImageBrowserPlaceHolderView.m in Sources */,
 				1B5024401A62C8FF000E6681 /* _MHMultiSizeImageCacheItem.m in Sources */,
 				1BD441FB1A5554D1001C0B58 /* main.m in Sources */,

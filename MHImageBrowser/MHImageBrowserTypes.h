@@ -26,7 +26,8 @@ typedef NS_ENUM(NSInteger, MHImageBrowserImageItemRepresentationType) {
 @property (nonatomic, assign, readonly) MHImageBrowserImageItemRepresentationType representationType;
 @property (nonatomic, strong, readonly) id representation;
 @property (nonatomic, assign, readonly) NSUInteger version;
-@property (nonatomic, strong, readonly) NSString* title;
+@property (nonatomic, strong, readwrite) NSString* title;
 @property (nonatomic, strong, readonly) NSString* subtitle;
 @property (nonatomic, assign, readonly, getter=isSelectable) BOOL selectable;
+@property (nonatomic, assign, readonly, getter=isTitleEditable) BOOL titleEditable;
 @end

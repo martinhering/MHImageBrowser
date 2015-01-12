@@ -18,5 +18,5 @@
 @property (nonatomic, strong, readwrite) NSString* title;
 @property (nonatomic, strong, readwrite) NSString* subtitle;
 @property (nonatomic, assign, readwrite, getter=isSelectable) BOOL selectable;
-
+@property (nonatomic, assign, readwrite, getter=isTitleEditable) BOOL titleEditable;
 @end
