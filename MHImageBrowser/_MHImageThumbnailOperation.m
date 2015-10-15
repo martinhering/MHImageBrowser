@@ -8,6 +8,8 @@
 
 #import "_MHImageThumbnailOperation.h"
 
+#import <AVFoundation/AVFoundation.h>
+
 @interface _MHImageThumbnailOperation ()
 @property (strong, readwrite) NSURL* url;
 @property (assign, readwrite) NSUInteger size;
@@ -29,6 +31,36 @@
 
 - (CGImageRef) imageWithFileURL:(NSURL*)file
 {
+    NSArray* videoSuffixes = @[@"mp4", @"m4v", @"mov"];
+    if ([videoSuffixes containsObject:file.pathExtension.lowercaseString])
+    {
+        AVURLAsset *asset= [[AVURLAsset alloc] initWithURL:file options:nil];
+
+        AVAssetImageGenerator *generator = [[AVAssetImageGenerator alloc] initWithAsset:asset];
+        generator.appliesPreferredTrackTransform = YES;
+        generator.maximumSize = CGSizeMake(self.size, self.size);
+
+        dispatch_semaphore_t semaphore = dispatch_semaphore_create(0);
+
+        __block CGImageRef thumbnail;
+        [generator generateCGImagesAsynchronouslyForTimes:@[[NSValue valueWithCMTime:kCMTimeZero]] completionHandler:^(CMTime requestedTime, CGImageRef image, CMTime actualTime, AVAssetImageGeneratorResult result, NSError *error) {
+
+            if (result == AVAssetImageGeneratorSucceeded) {
+                thumbnail = CGImageCreateCopy(image);
+            } else {
+                NSLog(@"error generating image from asset: %@", error);
+            }
+            dispatch_semaphore_signal(semaphore);
+        }];
+
+        if (dispatch_semaphore_wait(semaphore, DISPATCH_TIME_FOREVER) != 0) {
+            NSLog(@"semaphore fail");
+        }
+
+        return thumbnail;
+    }
+
+
     CGImageSourceRef imageSource = CGImageSourceCreateWithURL((__bridge CFURLRef)file, NULL);
     if (!imageSource) {
         NSLog(@"image source is invalid: %@", self.url);
