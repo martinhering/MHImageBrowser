@@ -35,10 +35,10 @@
 - (void) awakeFromNib
 {
     self.window.appearance = [NSAppearance appearanceNamed:NSAppearanceNameVibrantDark];
-    self.window.backgroundColor = [NSColor blackColor];
+    self.window.backgroundColor = [NSColor colorWithCalibratedRed:26/255.f green:27/255.f blue:30/255.f alpha:1];
     
     // Insert code here to initialize your application
-    self.imageBrowserViewController.backgroundColor = [NSColor colorWithCalibratedWhite:0.15 alpha:1.];
+    self.imageBrowserViewController.backgroundColor = [NSColor colorWithCalibratedWhite:0.0 alpha:1.];
     self.imageBrowserViewController.cellStyle = MHImageBrowserCellStyleTitled | MHImageBrowserCellStyleSelectionFollowsImageOutline;
     
     self.cellSizeValue = self.imageBrowserViewController.cellSize.width;
@@ -75,7 +75,7 @@
     
     
     NSFileManager* fman = [NSFileManager defaultManager];
-    NSString* dirPath = [@"~/Desktop/Photos" stringByExpandingTildeInPath];
+    NSString* dirPath = [@"~/Pictures" stringByExpandingTildeInPath];
     NSArray* content = [fman contentsOfDirectoryAtPath:dirPath error:nil];
     for(NSString* path in content) {
         NSString* fullpath = [dirPath stringByAppendingPathComponent:path];

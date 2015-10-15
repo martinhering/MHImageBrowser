@@ -18,6 +18,8 @@ static NSString * const kImageCellIdentifier = @"ImageCellIdentifier";
     struct {
         unsigned int delegateImageBrowserSelectionDidChange:1;
     } _flags;
+    
+    BOOL _programmaticChange;
 }
 @property (nonatomic, strong) IBOutlet JNWCollectionView* collectionView;
 @property (nonatomic, strong) NSIndexPath* activeScrollCellIndexPath;
@@ -28,9 +30,7 @@ static NSString * const kImageCellIdentifier = @"ImageCellIdentifier";
 @property (nonatomic, assign) NSUInteger thumbnailSize;
 @end
 
-@implementation MHImageBrowserViewController {
-    BOOL _programmaticChange;
-}
+@implementation MHImageBrowserViewController
 
 - (void)viewDidLoad
 {
