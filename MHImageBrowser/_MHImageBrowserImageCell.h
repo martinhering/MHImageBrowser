@@ -13,4 +13,6 @@
 @interface MHImageBrowserImageCell (PrivateAPI)
 @property (nonatomic, assign) NSUInteger thumbnailSize;
 @property (nonatomic, strong) _MHImageBrowserCacheManager* cacheManager;
+
+- (NSArray *)draggingImageComponents;
 @end

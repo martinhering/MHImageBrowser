@@ -42,6 +42,9 @@
 - (NSUInteger) imageBrowser:(MHImageBrowserViewController *)imageBrowser numberOfItemsInGroup:(NSUInteger)group;
 - (id <MHImageBrowserImageItem>) imageBrowser:(MHImageBrowserViewController *)imageBrowser itemAtIndexPath:(NSIndexPath*)indexPath;
 @optional
+- (NSDragOperation) imageBrowser:(MHImageBrowserViewController *)imageBrowser validateDrop:(id<NSDraggingInfo>)info proposedItemIndexPath:(NSIndexPath*)itemIndexPath proposedDropOperation:(MHImageBrowserViewDropOperation)operation;
+- (BOOL) imageBrowser:(MHImageBrowserViewController *)imageBrowser acceptDrop:(id<NSDraggingInfo>)info itemIndexPath:(NSIndexPath*)indexPath dropOperation:(MHImageBrowserViewDropOperation)operation;
+- (id<NSPasteboardWriting>) imageBrowser:(MHImageBrowserViewController *)imageBrowser pasteboardWriterForItemIndexPath:(NSIndexPath*)indexPath;
 @end
 
 

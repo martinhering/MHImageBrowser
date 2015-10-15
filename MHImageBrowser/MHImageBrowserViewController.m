@@ -7,21 +7,20 @@
 //
 
 #import "MHImageBrowserViewController.h"
-#import <JNWCollectionView/JNWCollectionView.h>
-
+#import "MHImageBrowserView.h"
 #import "_MHImageBrowserImageCell.h"
 #import "_MHImageBrowserCacheManager.h"
 
 static NSString * const kImageCellIdentifier = @"ImageCellIdentifier";
 
 @interface MHImageBrowserViewController () <JNWCollectionViewDataSource, JNWCollectionViewDelegate, JNWCollectionViewGridLayoutDelegate> {
-    struct {
-        unsigned int delegateImageBrowserSelectionDidChange:1;
-    } _flags;
-    
+    BOOL _delegateImageBrowserSelectionDidChange;
+    BOOL _dataSourceImplementsValidateDrop;
+    BOOL _dataSourceImplementsAcceptDrop;
+    BOOL _dataSourceImplementsPasteboardWriterForRow;
     BOOL _programmaticChange;
 }
-@property (nonatomic, strong) IBOutlet JNWCollectionView* collectionView;
+@property (nonatomic, strong) IBOutlet MHImageBrowserView* collectionView;
 @property (nonatomic, strong) NSIndexPath* activeScrollCellIndexPath;
 @property (nonatomic, strong) NSIndexPath* selectedIndexPath;
 @property (nonatomic) BOOL userScroll;
@@ -39,7 +38,7 @@ static NSString * const kImageCellIdentifier = @"ImageCellIdentifier";
     
     self.cacheManager = [[_MHImageBrowserCacheManager alloc] init];
     
-    JNWCollectionView* collectionView = [[JNWCollectionView alloc] initWithFrame:self.view.bounds];
+    MHImageBrowserView* collectionView = [[MHImageBrowserView alloc] initWithFrame:self.view.bounds];
     collectionView.autoresizingMask = NSViewWidthSizable | NSViewHeightSizable;
     
     JNWCollectionViewGridLayout *gridLayout = [[JNWCollectionViewGridLayout alloc] init];
@@ -114,7 +113,7 @@ static NSString * const kImageCellIdentifier = @"ImageCellIdentifier";
 {
     if (_delegate != delegate) {
         _delegate = delegate;
-        _flags.delegateImageBrowserSelectionDidChange = [delegate respondsToSelector:@selector(imageBrowserSelectionDidChange:)];
+        _delegateImageBrowserSelectionDidChange = [delegate respondsToSelector:@selector(imageBrowserSelectionDidChange:)];
     }
 }
 
@@ -157,7 +156,7 @@ static NSString * const kImageCellIdentifier = @"ImageCellIdentifier";
     }
 }
 
-- (void)collectionViewWillRelayoutCells:(JNWCollectionView *)collectionView
+- (void)collectionViewWillRelayoutCells:(MHImageBrowserView *)collectionView
 {
     NSIndexPath* scrollIndexPath = (self.selectedIndexPath) ? self.selectedIndexPath : self.activeScrollCellIndexPath;
     if (scrollIndexPath) {
@@ -197,7 +196,7 @@ static NSString * const kImageCellIdentifier = @"ImageCellIdentifier";
 #pragma mark - DataSource
 
 
-- (JNWCollectionViewCell *)collectionView:(JNWCollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath
+- (JNWCollectionViewCell *)collectionView:(MHImageBrowserView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath
 {
     MHImageBrowserImageCell *cell = (MHImageBrowserImageCell *)[collectionView dequeueReusableCellWithIdentifier:kImageCellIdentifier];
     cell.style = self.cellStyle;
@@ -206,7 +205,7 @@ static NSString * const kImageCellIdentifier = @"ImageCellIdentifier";
     return cell;
 }
 
-- (void) collectionView:(JNWCollectionView *)collectionView willDisplayCell:(JNWCollectionViewCell *)cell forItemAtIndexPath:(NSIndexPath *)indexPath
+- (void) collectionView:(MHImageBrowserView *)collectionView willDisplayCell:(JNWCollectionViewCell *)cell forItemAtIndexPath:(NSIndexPath *)indexPath
 {
     id<MHImageBrowserImageItem> item = [self.dataSource imageBrowser:self itemAtIndexPath:indexPath];
         
@@ -214,17 +213,17 @@ static NSString * const kImageCellIdentifier = @"ImageCellIdentifier";
     cellSubclass.itemValue = item;
 }
 
-- (NSInteger)numberOfSectionsInCollectionView:(JNWCollectionView *)collectionView
+- (NSInteger)numberOfSectionsInCollectionView:(MHImageBrowserView *)collectionView
 {
     return [self.dataSource numberOfGroupsInImageBrowser:self];
 }
 
-- (NSUInteger)collectionView:(JNWCollectionView *)collectionView numberOfItemsInSection:(NSInteger)section
+- (NSUInteger)collectionView:(MHImageBrowserView *)collectionView numberOfItemsInSection:(NSInteger)section
 {
     return [self.dataSource imageBrowser:self numberOfItemsInGroup:section];
 }
 
-- (CGSize)sizeForItemInCollectionView:(JNWCollectionView *)collectionView {
+- (CGSize)sizeForItemInCollectionView:(MHImageBrowserView *)collectionView {
     NSSize cellSize = self.cellSize;
     if (self.cellStyle & MHImageBrowserCellStyleTitled) {
         cellSize.height += 20;
@@ -237,6 +236,18 @@ static NSString * const kImageCellIdentifier = @"ImageCellIdentifier";
         cellSize.height += 5;
     }
     return cellSize;
+}
+
+- (NSDragOperation) imageBrowserView:(MHImageBrowserView *)imageBrowserView validateDrop:(id<NSDraggingInfo>)info proposedItemIndexPath:(NSIndexPath*)itemIndexPath proposedDropOperation:(MHImageBrowserViewDropOperation)operation {
+    return [self.dataSource imageBrowser:self validateDrop:info proposedItemIndexPath:itemIndexPath proposedDropOperation:operation];
+}
+
+- (BOOL) imageBrowserView:(MHImageBrowserView *)imageBrowserView acceptDrop:(id<NSDraggingInfo>)info itemIndexPath:(NSIndexPath*)indexPath dropOperation:(MHImageBrowserViewDropOperation)operation {
+    return [self.dataSource imageBrowser:self acceptDrop:info itemIndexPath:indexPath dropOperation:operation];
+}
+
+- (id<NSPasteboardWriting>) imageBrowserView:(MHImageBrowserView *)imageBrowserView pasteboardWriterForItemIndexPath:(NSIndexPath*)indexPath {
+    return [self.dataSource imageBrowser:self pasteboardWriterForItemIndexPath:indexPath];
 }
 
 #pragma mark - Selection
@@ -259,26 +270,26 @@ static NSString * const kImageCellIdentifier = @"ImageCellIdentifier";
 
 #pragma mark - Delegate
 
-- (BOOL)collectionView:(JNWCollectionView *)collectionView shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath
+- (BOOL)collectionView:(MHImageBrowserView *)collectionView shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath
 {
     id<MHImageBrowserImageItem> item = [self.dataSource imageBrowser:self itemAtIndexPath:indexPath];
     return item.selectable;
 }
 
-- (void)collectionView:(JNWCollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath
+- (void)collectionView:(MHImageBrowserView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath
 {
     self.selectedIndexPath = indexPath;
-    if (_flags.delegateImageBrowserSelectionDidChange && !_programmaticChange) {
+    if (_delegateImageBrowserSelectionDidChange && !_programmaticChange) {
         [self.delegate imageBrowserSelectionDidChange:self];
     }
 }
 
-- (void)collectionView:(JNWCollectionView *)collectionView didDeselectItemAtIndexPath:(NSIndexPath *)indexPath
+- (void)collectionView:(MHImageBrowserView *)collectionView didDeselectItemAtIndexPath:(NSIndexPath *)indexPath
 {
     if ([self.selectedIndexPath isEqualTo:indexPath]) {
         self.selectedIndexPath = nil;
     }
-    if (_flags.delegateImageBrowserSelectionDidChange && !_programmaticChange) {
+    if (_delegateImageBrowserSelectionDidChange && !_programmaticChange) {
         [self.delegate imageBrowserSelectionDidChange:self];
     }
 }

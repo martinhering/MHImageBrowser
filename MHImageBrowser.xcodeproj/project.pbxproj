@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		1B5024401A62C8FF000E6681 /* _MHMultiSizeImageCacheItem.m in Sources */ = {isa = PBXBuildFile; fileRef = 1B50243F1A62C8FF000E6681 /* _MHMultiSizeImageCacheItem.m */; };
+		1B9C04381BCFD96300864A80 /* MHImageBrowserView.m in Sources */ = {isa = PBXBuildFile; fileRef = 1B9C04371BCFD96300864A80 /* MHImageBrowserView.m */; settings = {ASSET_TAGS = (); }; };
 		1BAC9CB31A5FED1600E22238 /* MHImageBrowserPlaceHolderView.m in Sources */ = {isa = PBXBuildFile; fileRef = 1BAC9CB21A5FED1600E22238 /* MHImageBrowserPlaceHolderView.m */; };
 		1BAC9CB71A60117400E22238 /* _MHImageBrowserCacheManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 1BAC9CB61A60117400E22238 /* _MHImageBrowserCacheManager.m */; };
 		1BAC9CBA1A60147200E22238 /* _MHImageThumbnailOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = 1BAC9CB91A60147200E22238 /* _MHImageThumbnailOperation.m */; };
@@ -73,6 +74,8 @@
 		1B50243E1A62C8FF000E6681 /* _MHMultiSizeImageCacheItem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = _MHMultiSizeImageCacheItem.h; sourceTree = "<group>"; };
 		1B50243F1A62C8FF000E6681 /* _MHMultiSizeImageCacheItem.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = _MHMultiSizeImageCacheItem.m; sourceTree = "<group>"; };
 		1B5024421A62CF06000E6681 /* _MHImageBrowserImageCell.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = _MHImageBrowserImageCell.h; sourceTree = "<group>"; };
+		1B9C04361BCFD96300864A80 /* MHImageBrowserView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MHImageBrowserView.h; sourceTree = "<group>"; };
+		1B9C04371BCFD96300864A80 /* MHImageBrowserView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MHImageBrowserView.m; sourceTree = "<group>"; };
 		1BAC9CB11A5FED1600E22238 /* MHImageBrowserPlaceHolderView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MHImageBrowserPlaceHolderView.h; sourceTree = "<group>"; };
 		1BAC9CB21A5FED1600E22238 /* MHImageBrowserPlaceHolderView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MHImageBrowserPlaceHolderView.m; sourceTree = "<group>"; };
 		1BAC9CB51A60117400E22238 /* _MHImageBrowserCacheManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = _MHImageBrowserCacheManager.h; sourceTree = "<group>"; };
@@ -147,6 +150,8 @@
 				1BAC9CBB1A61448200E22238 /* MHImageBrowserTypes.h */,
 				1BD442281A555985001C0B58 /* MHImageBrowserViewController.h */,
 				1BD442291A555985001C0B58 /* MHImageBrowserViewController.m */,
+				1B9C04361BCFD96300864A80 /* MHImageBrowserView.h */,
+				1B9C04371BCFD96300864A80 /* MHImageBrowserView.m */,
 				1B5024421A62CF06000E6681 /* _MHImageBrowserImageCell.h */,
 				1BD4422B1A555CC9001C0B58 /* MHImageBrowserImageCell.h */,
 				1BD4422C1A555CC9001C0B58 /* MHImageBrowserImageCell.m */,
@@ -333,6 +338,7 @@
 				1B5024401A62C8FF000E6681 /* _MHMultiSizeImageCacheItem.m in Sources */,
 				1BD441FB1A5554D1001C0B58 /* main.m in Sources */,
 				1BD4422A1A555985001C0B58 /* MHImageBrowserViewController.m in Sources */,
+				1B9C04381BCFD96300864A80 /* MHImageBrowserView.m in Sources */,
 				1BAC9CBA1A60147200E22238 /* _MHImageThumbnailOperation.m in Sources */,
 				1BD441F91A5554D1001C0B58 /* AppDelegate.m in Sources */,
 				1BD442311A5577AC001C0B58 /* DemoImageItem.m in Sources */,

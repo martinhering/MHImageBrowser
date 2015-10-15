@@ -31,3 +31,8 @@ typedef NS_ENUM(NSInteger, MHImageBrowserImageItemRepresentationType) {
 @property (nonatomic, assign, readonly, getter=isSelectable) BOOL selectable;
 @property (nonatomic, assign, readonly, getter=isTitleEditable) BOOL titleEditable;
 @end
+
+typedef NS_ENUM(NSInteger, MHImageBrowserViewDropOperation) {
+    MHImageBrowserViewDropOn,
+    MHImageBrowserViewDropAbove
+};

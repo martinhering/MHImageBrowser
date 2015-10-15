@@ -288,4 +288,33 @@ static void* const kObserverContextItemTitleEditable = @"itemTitleEditable";
     }
     return NO;
 }
+
+#pragma mark -
+
+- (void) _addView:(NSView*)view toDraggingComponents:(NSMutableArray*)components withKey:(NSString*)key
+{
+    // Snapshot the color view and add it in
+    NSRect viewBounds = [view bounds];
+    NSBitmapImageRep *imageRep = [view bitmapImageRepForCachingDisplayInRect:viewBounds];
+    [view cacheDisplayInRect:viewBounds toBitmapImageRep:imageRep];
+
+    NSImage *draggedImage = [[NSImage alloc] initWithSize:[imageRep size]];
+    [draggedImage addRepresentation:imageRep];
+
+    // Add in another component
+    NSDraggingImageComponent* component = [NSDraggingImageComponent draggingImageComponentWithKey:key];
+    component.contents = draggedImage;
+    component.frame = [self convertRect:viewBounds fromView:view];
+
+    [components addObject:component];
+}
+
+- (NSArray *)draggingImageComponents
+{
+    NSMutableArray* result = [[NSMutableArray alloc] init];
+
+    [self _addView:self.imageView toDraggingComponents:result withKey:@"imageView"];
+
+    return result;
+}
 @end
