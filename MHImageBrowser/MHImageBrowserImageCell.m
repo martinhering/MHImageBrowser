@@ -73,6 +73,11 @@ static void* const kObserverContextItemTitleEditable = @"itemTitleEditable";
     return self;
 }
 
+- (void) dealloc
+{
+    self.itemValue = nil;
+}
+
 - (void) asyncRedraw
 {
     [self.placeholderView setNeedsDisplay:YES];

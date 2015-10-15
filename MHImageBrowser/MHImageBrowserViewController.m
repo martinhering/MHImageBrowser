@@ -85,6 +85,10 @@ static NSString * const kImageCellIdentifier = @"ImageCellIdentifier";
     //get rid of the cached data
     self.cacheManager = [[_MHImageBrowserCacheManager alloc] init];
     [self.collectionView reloadData];
+
+    if (![self.collectionView cellForItemAtIndexPath:self.selectedIndexPath]) {
+        self.selectedIndexPath = nil;
+    }
 }
 
 - (NSScrollView*) contentScrollView {
