@@ -190,7 +190,15 @@ static NSString * const kImageCellIdentifier = @"ImageCellIdentifier";
     return indexPathes[middleIndex];
 }
 
+- (void) setSelectionColor:(NSColor *)selectionColor {
+    if (_selectionColor != selectionColor) {
+        _selectionColor = selectionColor;
 
+        for(MHImageBrowserImageCell* cell in self.collectionView.visibleCells) {
+            cell.selectionColor = selectionColor;
+        }
+    }
+}
 
 
 #pragma mark - DataSource
@@ -202,6 +210,7 @@ static NSString * const kImageCellIdentifier = @"ImageCellIdentifier";
     cell.style = self.cellStyle;
     cell.thumbnailSize = self.thumbnailSize;
     cell.cacheManager = self.cacheManager;
+    cell.selectionColor = self.selectionColor;
     return cell;
 }
 

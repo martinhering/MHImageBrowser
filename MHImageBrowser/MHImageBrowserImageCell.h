@@ -15,6 +15,7 @@
 
 @property (nonatomic, strong) id<MHImageBrowserImageItem> itemValue;
 @property (nonatomic, assign) MHImageBrowserCellStyle style;
+@property (nonatomic, strong) NSColor* selectionColor;
 
 - (void) asyncRedraw;
 

@@ -22,6 +22,7 @@
 @property (nonatomic, weak) IBOutlet id<MHImageBrowserViewControllerDelegate> delegate;
 
 @property (nonatomic, strong) NSColor *backgroundColor;
+@property (nonatomic, strong) NSColor *selectionColor;
 @property (nonatomic, assign) MHImageBrowserCellStyle cellStyle;
 
 //@property (nonatomic, strong) NSArray* selectedItems;

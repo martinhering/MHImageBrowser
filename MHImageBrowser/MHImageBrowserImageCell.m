@@ -38,26 +38,23 @@ static void* const kObserverContextItemTitleEditable = @"itemTitleEditable";
     if ((self = [super initWithFrame:frameRect]))
     {
         _selectionBackgroundView = [[NSView alloc] initWithFrame:frameRect];
-        _selectionBackgroundView.autoresizingMask = NSViewWidthSizable | NSViewHeightSizable;
         _selectionBackgroundView.wantsLayer = YES;
-        _selectionBackgroundView.layer.cornerRadius = 5.f;
-        _selectionBackgroundView.layer.backgroundColor = [[NSColor colorWithRed:8/255. green:109/255. blue:214/255. alpha:1] CGColor];
+        _selectionBackgroundView.layer.cornerRadius = 6.5f;
+        _selectionBackgroundView.layer.backgroundColor = [self.selectionColor CGColor];
         [self.contentView addSubview:_selectionBackgroundView];
         
         _placeholderView = [[[[self class] placeholderViewClass] alloc] initWithFrame:frameRect];
-        _placeholderView.autoresizingMask = NSViewWidthSizable | NSViewHeightSizable;
         _placeholderView.wantsLayer = YES;
         _placeholderView.hidden = YES;
         _placeholderView.layerContentsRedrawPolicy = NSViewLayerContentsRedrawOnSetNeedsDisplay;
         [self.contentView addSubview:_placeholderView];
         
         _imageView = [[NSView alloc] initWithFrame:NSZeroRect];
-        _imageView.autoresizingMask = NSViewWidthSizable | NSViewHeightSizable;
         _imageView.wantsLayer = YES;
+        _imageView.layer.cornerRadius = 5;
         [self.contentView addSubview:_imageView];
         
         _titleTextField = [[NSTextField alloc] initWithFrame:NSZeroRect];
-        _titleTextField.autoresizingMask = NSViewWidthSizable | NSViewMaxYMargin;
         _titleTextField.wantsLayer = YES;
         _titleTextField.font = [NSFont systemFontOfSize:12];
         _titleTextField.hidden = YES;
@@ -98,6 +95,13 @@ static void* const kObserverContextItemTitleEditable = @"itemTitleEditable";
     
     self.placeholderView.hidden = NO;
     self.itemValue = nil;
+}
+
+- (void) setSelectionColor:(NSColor *)selectionColor {
+    if (_selectionColor != selectionColor) {
+        _selectionColor = selectionColor;
+        self.selectionBackgroundView.layer.backgroundColor = [self.selectionColor CGColor];
+    }
 }
 
 - (void)layout {
@@ -144,7 +148,7 @@ static void* const kObserverContextItemTitleEditable = @"itemTitleEditable";
     if (!NSEqualRects(imageViewRect, self.imageView.frame)) {
         self.imageView.frame = imageViewRect;
         if (self.style & MHImageBrowserCellStyleSelectionFollowsImageOutline) {
-            self.selectionBackgroundView.frame = NSInsetRect(imageViewRect, -5, -5);
+            self.selectionBackgroundView.frame = NSInsetRect(imageViewRect, -2, -2);
         } else {
             self.selectionBackgroundView.frame = self.bounds;
         }
